@@ -3110,9 +3110,9 @@ GameObject:
   - component: {fileID: 914055252}
   - component: {fileID: 914055251}
   - component: {fileID: 914055255}
-  - component: {fileID: 914055256}
   - component: {fileID: 914055257}
   - component: {fileID: 914055258}
+  - component: {fileID: 914055259}
   m_Layer: 13
   m_Name: Ratinho
   m_TagString: Untagged
@@ -3129,7 +3129,7 @@ Transform:
   m_GameObject: {fileID: 914055249}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.002649, y: -2.584444, z: 0.018429438}
+  m_LocalPosition: {x: -2.5, y: -2.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3324,24 +3324,7 @@ MonoBehaviour:
   moveSpeed: 5
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 2824
---- !u!114 &914055256
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 914055249}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 803138ed20661414b9f5ba3dc81892d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  runSpeed: 4
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  runDirection: {x: 0, y: 0}
+    m_Bits: 2952
 --- !u!61 &914055257
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3415,6 +3398,24 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &914055259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 914055249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 803138ed20661414b9f5ba3dc81892d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runSpeed: 4
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  runDirection: {x: 0, y: 0}
+  startDelay: 0.5
 --- !u!1 &996197848
 GameObject:
   m_ObjectHideFlags: 0
@@ -3425,7 +3426,7 @@ GameObject:
   m_Component:
   - component: {fileID: 996197849}
   m_Layer: 13
-  m_Name: Inimigos
+  m_Name: Presas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3440,7 +3441,7 @@ Transform:
   m_GameObject: {fileID: 996197848}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5026491, y: 0.08444395, z: -0.018429438}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3465,7 +3466,7 @@ GameObject:
   - component: {fileID: 1220683891}
   m_Layer: 7
   m_Name: Jogador
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3604,7 +3605,7 @@ MonoBehaviour:
   moveSpeed: 5
   collisionLayer:
     serializedVersion: 2
-    m_Bits: 840
+    m_Bits: 9032
 --- !u!114 &1220683889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3630,7 +3631,7 @@ MonoBehaviour:
   boxLayer:
     serializedVersion: 2
     m_Bits: 512
-  mouseObject: {fileID: 914055249}
+  preyObject: {fileID: 914055249}
 --- !u!114 &1220683890
 MonoBehaviour:
   m_ObjectHideFlags: 0

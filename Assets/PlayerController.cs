@@ -19,7 +19,6 @@ public class PlayerController : MonoBehaviour
         pullBoxes = GetComponent<PullBoxes>();
         holdCats = GetComponent<HoldCats>();
 
-        // Arredonda a posição inicial para o centro do grid
         transform.position = new Vector3(
             RoundToGrid(transform.position.x),
             RoundToGrid(transform.position.y),
@@ -37,7 +36,6 @@ public class PlayerController : MonoBehaviour
 
     input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-    // Prioriza eixo dominante
     if (Mathf.Abs(input.x) > Mathf.Abs(input.y))
         input.y = 0;
     else
@@ -46,7 +44,6 @@ public class PlayerController : MonoBehaviour
     if (input != Vector2.zero)
         lastDirection = input.normalized;
 
-    // Puxar caixas
     if (Input.GetKeyDown(KeyCode.E))
     {
         if (!pullBoxes.IsPulling)
@@ -56,7 +53,6 @@ public class PlayerController : MonoBehaviour
         return;
     }
 
-    // Segurar/soltar gatos
     if (Input.GetKeyDown(KeyCode.T))
     {
         if (holdCats != null)
@@ -84,12 +80,6 @@ public class PlayerController : MonoBehaviour
     else
     {
         LayerMask blockedOrCollided = collisionLayer | LayerMask.GetMask("Travado");
-
-        // Se está segurando gato, adiciona a layer "prey" para bloquear o rato
-        if (holdCats != null && holdCats.IsHoldingCat())
-        {
-            blockedOrCollided |= LayerMask.GetMask("Prey");
-        }
 
         Vector2 gridCenter = new Vector2(RoundToGrid(newTargetPos.x), RoundToGrid(newTargetPos.y));
         bool isBlocked = Physics2D.OverlapCircle(gridCenter, 0.1f, blockedOrCollided);
@@ -121,7 +111,7 @@ public class PlayerController : MonoBehaviour
 
         transform.position = destination;
         isMoving = false;
-
+        
         if (holdCats != null)
             holdCats.NotifyArrived();
     }

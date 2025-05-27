@@ -12,45 +12,43 @@ public class HoldCats : MonoBehaviour
     private bool isHoldingCat = false;
 
     private GameObject heldCat;
-    public GameObject mouseObject;   
-    private MouseRun mouseScript;
+    public GameObject preyObject;
+    private PreyRun preyScript;
 
     private Vector2 lastDirection = Vector2.down;
 
     void Start()
     {
-        if (mouseObject != null)
+        if (preyObject != null)
         {
-            mouseScript = mouseObject.GetComponent<MouseRun>();
+            preyScript = preyObject.GetComponent<PreyRun>();
         }
     }
 
-    void CheckIfPlayerOnMousePath()
+    void CheckIfPlayerOnPreyPath()
     {
-        if (heldCat == null || mouseObject == null || mouseScript == null) return;
+        if (heldCat == null || preyObject == null || preyScript == null)
+            return;
 
-        Vector2 playerPos = new Vector2(RoundToGrid(transform.position.x), RoundToGrid(transform.position.y));
-        Vector2 mousePos = new Vector2(RoundToGrid(mouseObject.transform.position.x), RoundToGrid(mouseObject.transform.position.y));
-        Vector2 mouseRunDir = mouseScript.runDirection;
-        Vector2 nextMousePos = mousePos + mouseRunDir;
+        Vector2 playerPos = RoundToGrid(transform.position);
+        Vector2 preyPos = RoundToGrid(preyObject.transform.position);
+        Vector2 preyDir = preyScript.runDirection.normalized;
+        Vector2 preyNextPos = preyPos + preyDir;
 
-        if (playerPos == nextMousePos && isHoldingCat)
+        bool movingHorizontally = Mathf.Abs(preyDir.x) > 0.1f;
+        bool movingVertically = Mathf.Abs(preyDir.y) > 0.1f;
+
+        if ((movingHorizontally || movingVertically) && playerPos == preyNextPos && heldCat != null)
         {
+            Debug.Log("🐱 Jogador passou no próximo tile da presa segurando o gato.");
 
-            // 1. O rato deve fugir na direção oposta da do jogador (já feito no rato)
-            Vector2 oppositeDir = -lastDirection;
-            if (oppositeDir == Vector2.zero)
-                oppositeDir = Vector2.down;
+            preyScript.StopMoving();
 
-            mouseScript.InitRun(oppositeDir);
+            Vector2 fleeDir = -preyDir;
+            Vector2 dirPlayerToPrey = (preyPos - playerPos).normalized;
+            Vector2 catStartPos = playerPos + dirPlayerToPrey;
 
-            Vector2 playerGridPos = new Vector2(
-                RoundToGrid(transform.position.x),
-                RoundToGrid(transform.position.y)
-            );
-            heldCat.transform.position = new Vector3(playerGridPos.x, playerGridPos.y, -0.1f);
-
-            // 2. O gato perde o jogador e começa a correr atrás do rato
+            heldCat.transform.position = new Vector3(catStartPos.x, catStartPos.y, -0.1f);
             heldCat.SetActive(true);
             heldCat.GetComponent<SpriteRenderer>().enabled = true;
             heldCat.GetComponent<Collider2D>().enabled = true;
@@ -58,18 +56,19 @@ public class HoldCats : MonoBehaviour
             CatGetPrey catScript = heldCat.GetComponent<CatGetPrey>();
             if (catScript != null)
             {
-                catScript.InitChase(mouseObject.transform);
-                Debug.Log("🐱 Gato perdeu o jogador e está perseguindo o rato!");
+                catScript.InitChase(preyObject.transform);
+                Debug.Log("🐱 Gato iniciou perseguição!");
             }
 
-            // 3. O jogador perde o gato
+            preyScript.InitRun(fleeDir);
+            Debug.Log("🐭 Presa iniciou fuga!");
+
             heldCat = null;
             isHoldingCat = false;
-
-            Debug.Log("😿 Jogador perdeu o gato que está perseguindo o rato!");
         }
     }
-   
+
+
     void CheckIfPlayerOnCatRun()
     {
         if (!isHoldingCat || heldCat == null)
@@ -80,7 +79,6 @@ public class HoldCats : MonoBehaviour
             RoundToGrid(transform.position.y)
         );
 
-        // Raio bem pequeno para garantir só pegar exatamente o tile embaixo do jogador
         float radius = 0.05f;
 
         if (Physics2D.OverlapCircle(pos, radius, catRunLayer))
@@ -119,7 +117,7 @@ public class HoldCats : MonoBehaviour
             if (catCol != null)
             {
                 heldCat = catCol.gameObject;
-                heldCat.transform.position = RoundToGrid(transform.position); // 👈 Garante que o gato acompanhe o jogador!
+                heldCat.transform.position = RoundToGrid(transform.position);
                 heldCat.GetComponent<SpriteRenderer>().enabled = false;
                 heldCat.GetComponent<Collider2D>().enabled = false;
                 isHoldingCat = true;
@@ -130,8 +128,6 @@ public class HoldCats : MonoBehaviour
         }
         Debug.Log("Nenhum gato próximo para pegar.");
     }
-
-
     public void ReleaseCat()
     {
         if (heldCat == null) return;
@@ -141,8 +137,8 @@ public class HoldCats : MonoBehaviour
 
         Vector2 dropPos = (Vector2)transform.position + dropDir;
         bool isBlocked = Physics2D.OverlapCircle(dropPos, 0.1f, collisionLayer);
-        Collider2D boxCol = Physics2D.OverlapCircle(dropPos, 0.1f, boxLayer);          
-               
+        Collider2D boxCol = Physics2D.OverlapCircle(dropPos, 0.1f, boxLayer);
+
         if (!isBlocked || boxCol != null)
         {
             heldCat.transform.position = new Vector3(dropPos.x, dropPos.y, -0.1f);
@@ -158,8 +154,8 @@ public class HoldCats : MonoBehaviour
                     Debug.Log("❌ Essa caixa já está ocupada. Não é possível soltar o gato aqui.");
                     return;
                 }
-            
-                heldCat.GetComponent<SpriteRenderer>().sortingOrder = 10;              
+
+                heldCat.GetComponent<SpriteRenderer>().sortingOrder = 10;
                 boxCol.gameObject.layer = blockedLayer;
                 heldCat.layer = blockedLayer;
 
@@ -178,7 +174,6 @@ public class HoldCats : MonoBehaviour
             Debug.Log("❌ Não é possível soltar o gato aqui. Direção bloqueada.");
         }
     }
-
     public bool IsHoldingCat()
     {
         return isHoldingCat;
@@ -192,7 +187,7 @@ public class HoldCats : MonoBehaviour
     public void NotifyArrived()
     {
         CheckIfPlayerOnCatRun();
-        CheckIfPlayerOnMousePath();
+        CheckIfPlayerOnPreyPath();
     }
 
     float RoundToGrid(float value)
