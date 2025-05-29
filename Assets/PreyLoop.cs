@@ -7,12 +7,11 @@ public class PreyLoop : MonoBehaviour
     public float moveSpeed = 0.5f;
     public LayerMask obstacleLayer;
 
+
+    private int     PreySteps = 5;
     private PreyRun preyRun;
     private Vector2 startPos;
-    private Vector2 chosenDir = Vector2.zero;
-    private Vector2[] directions = {
-        Vector2.up, Vector2.down, Vector2.left, Vector2.right
-    };
+    public Vector2 chosenDir = Vector2.zero;
 
     private void Start()
     {
@@ -28,12 +27,15 @@ public class PreyLoop : MonoBehaviour
 
     void ChooseInitialDirection()
     {
+        Vector2[] directions = {
+        Vector2.up, Vector2.down, Vector2.left, Vector2.right
+        };
         foreach (Vector2 dir in directions)
         {
             Vector2 checkPos = startPos;
             bool clear = true;
 
-            for (int i = 1; i <= 5; i++)
+            for (int i = 0; i < PreySteps; i++)
             {
                 checkPos += dir;
                 if (Physics2D.OverlapCircle(checkPos, 0.1f, obstacleLayer))
@@ -60,17 +62,14 @@ public class PreyLoop : MonoBehaviour
                 yield return null;
             }
 
-            for (int i = 1; i <= 5; i++)
+            for (int i = 0; i < PreySteps; i++)
             {
-                Vector2 targetPos = startPos + chosenDir * i;
-                yield return StartCoroutine(WaitAndMoveTo(targetPos));
+                startPos += chosenDir;
+                yield return StartCoroutine(WaitAndMoveTo(startPos));
             }
 
-            for (int i = 4; i >= 0; i--)
-            {
-                Vector2 targetPos = startPos + chosenDir * i;
-                yield return StartCoroutine(WaitAndMoveTo(targetPos));
-            }
+            chosenDir *= -1.0f;
+
         }
     }
 

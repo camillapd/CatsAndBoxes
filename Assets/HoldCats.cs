@@ -13,6 +13,8 @@ public class HoldCats : MonoBehaviour
 
     private GameObject heldCat;
     public GameObject preyObject;
+    public GameObject preyLoopObject;
+    private PreyLoop loopScript;
     private PreyRun preyScript;
 
     private Vector2 lastDirection = Vector2.down;
@@ -23,28 +25,48 @@ public class HoldCats : MonoBehaviour
         {
             preyScript = preyObject.GetComponent<PreyRun>();
         }
+        if (preyLoopObject != null)
+        {
+            loopScript = preyLoopObject.GetComponent<PreyLoop>();
+        }
     }
 
     void CheckIfPlayerOnPreyPath()
     {
-        if (heldCat == null || preyObject == null || preyScript == null)
+        if (heldCat == null || preyObject == null)
             return;
 
+        
+        bool preyCatSameAxis = false;
         Vector2 playerPos = RoundToGrid(transform.position);
         Vector2 preyPos = RoundToGrid(preyObject.transform.position);
-        Vector2 preyDir = preyScript.runDirection.normalized;
-        Vector2 preyNextPos = preyPos + preyDir;
+        Vector2 preyChosenDir = loopScript.chosenDir;
+        Vector2 preyNextPos = preyPos + preyChosenDir;
 
-        bool movingHorizontally = Mathf.Abs(preyDir.x) > 0.1f;
-        bool movingVertically = Mathf.Abs(preyDir.y) > 0.1f;
+        float distanceNow = (playerPos - preyPos).sqrMagnitude;
+        float distanceNext = (playerPos - preyNextPos).sqrMagnitude;
 
-        if ((movingHorizontally || movingVertically) && playerPos == preyNextPos && heldCat != null)
+        
+        bool isMovingTowardsCat = distanceNow > distanceNext;
+
+        if (preyChosenDir == Vector2.up || preyChosenDir == Vector2.down) {
+            preyCatSameAxis = preyPos.x == playerPos.x;
+            if (preyCatSameAxis)
+                Debug.Log("🐭 Presa e 🐱 Jogador estão no mesmo X");
+        } else {
+            preyCatSameAxis = preyNextPos.y == playerPos.y;
+            if (preyCatSameAxis)
+                Debug.Log("🐭 Presa e 🐱 Jogador estão no mesmo Y");
+        }
+
+
+        if (preyCatSameAxis && isMovingTowardsCat)
         {
             Debug.Log("🐱 Jogador passou no próximo tile da presa segurando o gato.");
 
             preyScript.StopMoving();
 
-            Vector2 fleeDir = -preyDir;
+            Vector2 fleeDir = -preyChosenDir;
             Vector2 dirPlayerToPrey = (preyPos - playerPos).normalized;
             Vector2 catStartPos = playerPos + dirPlayerToPrey;
 
