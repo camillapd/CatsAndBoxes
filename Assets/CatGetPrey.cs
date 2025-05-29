@@ -9,9 +9,12 @@ public class CatGetPrey : MonoBehaviour
 
     private Transform preyTransform;
     private bool chasingPrey;
+    private GameManager GM;
 
     public void InitChase(Transform prey)
     {
+        GM = Object.FindAnyObjectByType<GameManager>();
+
         Debug.Log("🐱 InitChase foi chamado!");
         transform.position = RoundToGrid(transform.position);
         preyTransform = prey;
@@ -79,6 +82,7 @@ public class CatGetPrey : MonoBehaviour
 
                 chasingPrey = false;
                 Debug.Log("🐾 Gato parou de perseguir.");
+                GM.CheckVictory();
                 yield break;
             }
 

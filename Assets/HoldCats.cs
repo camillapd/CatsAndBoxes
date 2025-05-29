@@ -18,9 +18,12 @@ public class HoldCats : MonoBehaviour
     private PreyRun preyScript;
 
     private Vector2 lastDirection = Vector2.down;
+    private GameManager GM;
 
     void Start()
     {
+        GM = Object.FindAnyObjectByType<GameManager>();
+
         if (preyObject != null)
         {
             preyScript = preyObject.GetComponent<PreyRun>();
@@ -36,7 +39,7 @@ public class HoldCats : MonoBehaviour
         if (heldCat == null || preyObject == null)
             return;
 
-        
+
         bool preyCatSameAxis = false;
         Vector2 playerPos = RoundToGrid(transform.position);
         Vector2 preyPos = RoundToGrid(preyObject.transform.position);
@@ -46,14 +49,17 @@ public class HoldCats : MonoBehaviour
         float distanceNow = (playerPos - preyPos).sqrMagnitude;
         float distanceNext = (playerPos - preyNextPos).sqrMagnitude;
 
-        
+
         bool isMovingTowardsCat = distanceNow > distanceNext;
 
-        if (preyChosenDir == Vector2.up || preyChosenDir == Vector2.down) {
+        if (preyChosenDir == Vector2.up || preyChosenDir == Vector2.down)
+        {
             preyCatSameAxis = preyPos.x == playerPos.x;
             if (preyCatSameAxis)
                 Debug.Log("🐭 Presa e 🐱 Jogador estão no mesmo X");
-        } else {
+        }
+        else
+        {
             preyCatSameAxis = preyNextPos.y == playerPos.y;
             if (preyCatSameAxis)
                 Debug.Log("🐭 Presa e 🐱 Jogador estão no mesmo Y");
@@ -182,6 +188,7 @@ public class HoldCats : MonoBehaviour
                 heldCat.layer = blockedLayer;
 
                 Debug.Log("🐾 Gato colocado na caixa. Agora está travado.");
+                GM.CheckVictory();
             }
             else
             {

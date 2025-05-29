@@ -10,9 +10,13 @@ public class CatRun : MonoBehaviour
 
     private Vector2 runDirection;
     private bool runningAway = false;
+    private GameManager GM;
+
 
     public void InitRun(Vector2 direction)
     {
+        GM = Object.FindAnyObjectByType<GameManager>();
+
         runDirection = direction.normalized;
         runningAway = true;
 
@@ -76,6 +80,7 @@ public class CatRun : MonoBehaviour
                     gameObject.layer = blockedLayer;
                     boxCol.gameObject.layer = blockedLayer;
                     Debug.Log("🐾 Gato parou em cima da caixa e agora está preso!");
+                    GM.CheckVictory();
                     yield break;
                 }
             }
