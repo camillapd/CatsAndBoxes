@@ -5,7 +5,9 @@ public class CatRun : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public LayerMask wallsLayer;
-    public LayerMask boxLayer; 
+    public LayerMask boxLayer;
+    public LayerMask outsideLayer;
+
     private Vector2 runDirection;
     private bool runningAway = false;
 
@@ -27,9 +29,19 @@ public class CatRun : MonoBehaviour
         while (runningAway)
         {
             Vector2 nextPos = (Vector2)transform.position + runDirection;
+            Collider2D walls = Physics2D.OverlapCircle(nextPos, 0.1f, wallsLayer);
 
-            if (Physics2D.OverlapCircle(nextPos, 0.1f, wallsLayer))
+            if (walls != null)
             {
+                Collider2D outside = Physics2D.OverlapCircle(nextPos, 0.1f, outsideLayer);
+
+                if (outside != null)
+                {
+                    Debug.Log("💨 O gato fugiu pela " + outside.name + "!");
+                    Destroy(gameObject);
+                    yield break;
+                }
+
                 runningAway = false;
                 gameObject.layer = LayerMask.NameToLayer("Gatos");
                 Debug.Log("🐾 Gato parou ao bater na parede e pode ser pego de novo!");

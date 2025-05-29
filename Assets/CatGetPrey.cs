@@ -5,6 +5,7 @@ public class CatGetPrey : MonoBehaviour
 {
     public float chaseSpeed = 2f;
     public LayerMask wallsLayer;
+    public LayerMask outsideLayer;
 
     private Transform preyTransform;
     private bool chasingPrey;
@@ -63,10 +64,19 @@ public class CatGetPrey : MonoBehaviour
 
             Vector2 nextPos = catPos + moveDir;
             Debug.Log($"🐱 Tentando mover para {nextPos} (direção {moveDir})");
+            Collider2D walls = Physics2D.OverlapCircle(nextPos, 0.1f, wallsLayer);
 
-
-            if (Physics2D.OverlapCircle(nextPos, 0.1f, wallsLayer))
+            if (walls != null)
             {
+                Collider2D outside = Physics2D.OverlapCircle(nextPos, 0.1f, outsideLayer);
+
+                if (outside != null)
+                {
+                    Debug.Log("💨 O gato fugiu pela " + outside.name + "!");
+                    Destroy(gameObject);
+                    yield break;
+                }
+
                 chasingPrey = false;
                 Debug.Log("🐾 Gato parou de perseguir.");
                 yield break;
