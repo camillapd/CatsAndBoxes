@@ -43,6 +43,7 @@ public class CatRun : MonoBehaviour
                 {
                     Debug.Log("💨 O gato fugiu pela " + outside.name + "!");
                     Destroy(gameObject);
+                    GM.GameOver();
                     yield break;
                 }
 

@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public GameObject gatosParentObject;
 
     private List<GameObject> allCats = new List<GameObject>();
-    
+
     void Start()
     {
         if (gatosParentObject == null)
@@ -61,5 +61,10 @@ public class GameManager : MonoBehaviour
     void WinGame()
     {
         Debug.Log("🏁 Fase vencida! Ir para próxima...");
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("💥 Game Over! Um gato fugiu!");
     }
 }
