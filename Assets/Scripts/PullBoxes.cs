@@ -7,10 +7,19 @@ public class PullBoxes : MonoBehaviour
     public LayerMask collisionLayer;
     public LayerMask boxLayer;
     public bool IsPulling => isPulling;
+    public Transform visual;
 
     private bool isMoving = false;
     private bool isPulling = false;
     private Transform pulledBox = null;
+    private Animator animator;
+
+    void Start()
+    {
+        if (visual != null)
+            animator = visual.GetComponent<Animator>();
+
+    }
 
     public void TryPullBox()
     {
@@ -22,10 +31,22 @@ public class PullBoxes : MonoBehaviour
 
             if (boxCol != null)
             {
-                pulledBox = boxCol.transform;
-                isPulling = true;
-                Debug.Log("Caixa agarrada!");
-                return;
+                int blockedLayer = LayerMask.NameToLayer("Travado");
+
+                if (boxCol.gameObject.layer == blockedLayer)
+                {
+                    animator.SetTrigger("tryPullBlocked");
+                    Debug.Log("❌ Essa caixa já está ocupada. Não é possível tirar o gato daqui.");
+                    return;
+                }
+                else
+                {
+                    pulledBox = boxCol.transform;
+                    isPulling = true;
+                    Debug.Log("Caixa agarrada!");
+                    animator.SetBool("isPullingIdle", true);
+                    return;
+                }
             }
         }
         Debug.Log("Nenhuma caixa próxima para puxar.");
@@ -35,10 +56,11 @@ public class PullBoxes : MonoBehaviour
     {
         isPulling = false;
         pulledBox = null;
+        animator.SetBool("isPullingIdle", false);
         Debug.Log("Caixa solta.");
     }
 
-     public void HandleBoxMovement(Vector2 input, MonoBehaviour caller)
+    public void HandleBoxMovement(Vector2 input, MonoBehaviour caller)
     {
         if (!isPulling || isMoving || pulledBox == null)
             return;
@@ -78,6 +100,7 @@ public class PullBoxes : MonoBehaviour
         }
         else
         {
+            animator.SetBool("isPullingIdle", true);
             Debug.Log("Só pode puxar movendo na direção oposta da caixa.");
         }
     }
@@ -85,6 +108,7 @@ public class PullBoxes : MonoBehaviour
     IEnumerator MoveWithBox(Vector3 playerDest, Vector3 boxDest)
     {
         isMoving = true;
+        animator.SetBool("isPullingBox", true);
         Vector3 startPlayerPos = transform.position;
         Vector3 startBoxPos = pulledBox.position;
         float t = 0f;
@@ -100,5 +124,6 @@ public class PullBoxes : MonoBehaviour
         transform.position = playerDest;
         pulledBox.position = boxDest;
         isMoving = false;
+        animator.SetBool("isPullingBox", false);
     }
 }
