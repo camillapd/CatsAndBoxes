@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,12 @@ public class GameManager : MonoBehaviour
 
     private GameObject gatosParentObject;
     private List<GameObject> allCats = new List<GameObject>();
+    private Animator playerAnimator;
+
+    public void SetPlayerAnimator(Animator animator)
+    {
+        playerAnimator = animator;
+    }
 
     public void SetGatosParent(Transform parent)
     {
@@ -51,6 +58,14 @@ public class GameManager : MonoBehaviour
     void WinGame()
     {
         Debug.Log("🏁 Fase vencida!");
+        StartCoroutine(WaitAndLoadNextLevel());
+    }
+
+    private System.Collections.IEnumerator WaitAndLoadNextLevel()
+    {
+        playerAnimator.SetTrigger("winLevel");
+
+        yield return new WaitForSeconds(5f);
 
         LevelManager lm = FindFirstObjectByType<LevelManager>();
         if (lm != null)

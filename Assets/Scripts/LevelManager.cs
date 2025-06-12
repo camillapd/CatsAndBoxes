@@ -34,6 +34,8 @@ public class LevelManager : MonoBehaviour
         {
             currentLevel = Instantiate(levels[index]);
             levelIndex = index;
+            Animator playerAnimator = currentLevel.GetComponentInChildren<Animator>();
+            gameManager.SetPlayerAnimator(playerAnimator);
 
             CurrentLevelInfo = currentLevel.GetComponent<LevelInfo>();
             if (CurrentLevelInfo != null)
