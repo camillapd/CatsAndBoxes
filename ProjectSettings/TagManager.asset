@@ -48,5 +48,8 @@ TagManager:
   - name: WinDoor
     uniqueID: 112000441
     locked: 0
+  - name: Furniture
+    uniqueID: 1547701555
+    locked: 0
   m_RenderingLayers:
   - Default
