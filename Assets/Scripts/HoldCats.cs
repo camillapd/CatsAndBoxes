@@ -39,7 +39,6 @@ public class HoldCats : MonoBehaviour
         if (heldCat == null || preyObject == null)
             return;
 
-
         bool preyCatSameAxis = false;
         Vector2 playerPos = RoundToGrid(transform.position);
         Vector2 preyPos = RoundToGrid(preyObject.transform.position);
@@ -48,7 +47,6 @@ public class HoldCats : MonoBehaviour
 
         float distanceNow = (playerPos - preyPos).sqrMagnitude;
         float distanceNext = (playerPos - preyNextPos).sqrMagnitude;
-
 
         bool isMovingTowardsCat = distanceNow > distanceNext;
 
@@ -188,6 +186,7 @@ public class HoldCats : MonoBehaviour
                 heldCat.layer = blockedLayer;
 
                 Debug.Log("🐾 Gato colocado na caixa. Agora está travado.");
+                SetIsOnBox();
                 GM.CheckVictory();
             }
             else
@@ -227,6 +226,16 @@ public class HoldCats : MonoBehaviour
     Vector2 RoundToGrid(Vector2 pos)
     {
         return new Vector2(RoundToGrid(pos.x), RoundToGrid(pos.y));
+    }
+
+    public void SetIsOnBox()
+    {
+        if (isHoldingCat)
+        {
+            Animator catAnimator = heldCat.GetComponent<Animator>();
+            catAnimator.SetBool("isOnBox", true);
+        }
+
     }
 
 }
