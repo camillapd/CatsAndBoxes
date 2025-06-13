@@ -8,6 +8,7 @@ public class PullBoxes : MonoBehaviour
     public LayerMask boxLayer;
     public bool IsPulling => isPulling;
     public Transform visual;
+    public HoldCats holdCats;
 
     private bool isMoving = false;
     private bool isPulling = false;
@@ -16,6 +17,8 @@ public class PullBoxes : MonoBehaviour
 
     void Start()
     {
+        holdCats = GetComponent<HoldCats>();
+
         if (visual != null)
             animator = visual.GetComponent<Animator>();
 
@@ -23,6 +26,12 @@ public class PullBoxes : MonoBehaviour
 
     public void TryPullBox()
     {
+        if (holdCats != null && holdCats.IsHoldingCat())
+        {
+            Debug.Log("❌ Não é possível puxar caixa carregando um gato.");
+            return;
+        }
+
         Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
         foreach (var dir in directions)
         {
@@ -32,6 +41,8 @@ public class PullBoxes : MonoBehaviour
             if (boxCol != null)
             {
                 int blockedLayer = LayerMask.NameToLayer("Travado");
+
+
 
                 if (boxCol.gameObject.layer == blockedLayer)
                 {
@@ -47,6 +58,7 @@ public class PullBoxes : MonoBehaviour
                     animator.SetBool("isPullingIdle", true);
                     return;
                 }
+
             }
         }
         Debug.Log("Nenhuma caixa próxima para puxar.");
