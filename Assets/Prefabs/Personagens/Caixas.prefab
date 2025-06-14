@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 9221007485518367189}
   - component: {fileID: 3337369669645339865}
   - component: {fileID: 621699884018011360}
+  - component: {fileID: 1886119489979341212}
   m_Layer: 9
   m_Name: Caixa2
-  m_TagString: Untagged
+  m_TagString: Caixa
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -232,6 +233,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1886119489979341212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283844496185679992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c749d074e6b56a94f80dca4493df925f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasCatInside: 0
 --- !u!1 &2684132520918654703
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,9 +258,10 @@ GameObject:
   - component: {fileID: 4761185971511613089}
   - component: {fileID: 1151303799651574682}
   - component: {fileID: 7856912558192246662}
+  - component: {fileID: 2645055959470198724}
   m_Layer: 9
   m_Name: Caixa1
-  m_TagString: Untagged
+  m_TagString: Caixa
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -464,6 +479,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2645055959470198724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2684132520918654703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c749d074e6b56a94f80dca4493df925f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasCatInside: 0
 --- !u!1 &5128019674535362019
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,7 +503,7 @@ GameObject:
   - component: {fileID: 4411585333332047727}
   m_Layer: 9
   m_Name: Caixas
-  m_TagString: Untagged
+  m_TagString: Caixa
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

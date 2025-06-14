@@ -402,7 +402,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockedLayer:
     serializedVersion: 2
-    m_Bits: 4096
+    m_Bits: 0
 --- !u!114 &1522011102
 MonoBehaviour:
   m_ObjectHideFlags: 0

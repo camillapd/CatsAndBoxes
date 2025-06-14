@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 8275852343790007208}
   - component: {fileID: 8973449491492281995}
   - component: {fileID: 6446593879575035087}
+  - component: {fileID: 7129001771248350241}
   m_Layer: 8
   m_Name: Gato2
   m_TagString: Gato
@@ -359,6 +360,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
+--- !u!114 &7129001771248350241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016884057863628644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 789167e1eab1c024987e66c17c90562e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7083700079282219930
 GameObject:
   m_ObjectHideFlags: 0
@@ -375,6 +388,7 @@ GameObject:
   - component: {fileID: 7029578191522468839}
   - component: {fileID: 2323501759960378169}
   - component: {fileID: 3533187681785380227}
+  - component: {fileID: 4639453200665873368}
   m_Layer: 8
   m_Name: Gato1
   m_TagString: Gato
@@ -685,3 +699,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
+--- !u!114 &4639453200665873368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7083700079282219930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 789167e1eab1c024987e66c17c90562e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
