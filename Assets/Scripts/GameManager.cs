@@ -30,24 +30,29 @@ public class GameManager : MonoBehaviour
 
     public void CheckVictory()
     {
-        foreach (GameObject cat in allCats)
+        if (AllCatsInBoxes())
         {
-            if (!IsCatBlocked(cat))
-            {
-                Debug.Log("😺 Ainda tem gato fora da caixa.");
-                return;
-            }
+            Debug.Log("🎉 Todos os gatos estão nas caixas! Vitória!");
+            WinGame();
         }
-
-        Debug.Log("🎉 Todos os gatos estão nas caixas! Vitória!");
-        WinGame();
+        else
+        {
+            Debug.Log("😺 Ainda tem gato fora da caixa.");
+            return;
+        }
     }
 
-    bool IsCatBlocked(GameObject cat)
+    bool AllCatsInBoxes()
     {
-        Vector2 pos = RoundToGrid(cat.transform.position);
-        Collider2D hit = Physics2D.OverlapPoint(pos, blockedLayer);
-        return hit != null;
+        foreach (var cat in allCats)
+        {
+            CatState catState = cat.GetComponent<CatState>();
+            if (catState == null || !catState.isInsideBox)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     Vector2 RoundToGrid(Vector2 pos)
