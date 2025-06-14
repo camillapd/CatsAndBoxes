@@ -29,9 +29,6 @@ public class PlayerController : MonoBehaviour
             RoundToGrid(transform.position.y),
             transform.position.z
         );
-
-        if (holdCats == null)
-            Debug.LogError("HoldCats script não encontrado no jogador!");
     }
 
     void Update()
@@ -89,15 +86,15 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            LayerMask blockedOrCollided = collisionLayer | LayerMask.GetMask("Travado");
+            LayerMask blockedOrCollided = collisionLayer;
 
             Vector2 gridCenter = new Vector2(RoundToGrid(newTargetPos.x), RoundToGrid(newTargetPos.y));
             bool isBlocked = Physics2D.OverlapCircle(gridCenter, 0.1f, blockedOrCollided);
 
             if (!isBlocked)
                 StartCoroutine(MoveTo(newTargetPos));
-            else
-                Debug.Log("Movimento bloqueado por obstáculo.");
+            // else
+            //     Debug.Log("Movimento bloqueado por obstáculo.");
         }
 
         // Atualiza animação e visual
