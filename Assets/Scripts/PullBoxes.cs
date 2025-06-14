@@ -40,25 +40,21 @@ public class PullBoxes : MonoBehaviour
 
             if (boxCol != null)
             {
-                int blockedLayer = LayerMask.NameToLayer("Travado");
+                BoxState boxState = boxCol.GetComponent<BoxState>();
 
-
-
-                if (boxCol.gameObject.layer == blockedLayer)
+                if (boxState != null && boxState.hasCatInside)
                 {
                     animator.SetTrigger("tryPullBlocked");
-                    Debug.Log("❌ Essa caixa já está ocupada. Não é possível tirar o gato daqui.");
-                    return;
-                }
-                else
-                {
-                    pulledBox = boxCol.transform;
-                    isPulling = true;
-                    Debug.Log("Caixa agarrada!");
-                    animator.SetBool("isPullingIdle", true);
+                    Debug.Log("❌ Essa caixa está ocupada por um gato. Não pode puxar.");
                     return;
                 }
 
+                // Caixa livre pra puxar
+                pulledBox = boxCol.transform;
+                isPulling = true;
+                Debug.Log("Caixa agarrada!");
+                animator.SetBool("isPullingIdle", true);
+                return;
             }
         }
         Debug.Log("Nenhuma caixa próxima para puxar.");
@@ -113,7 +109,6 @@ public class PullBoxes : MonoBehaviour
         else
         {
             animator.SetBool("isPullingIdle", true);
-            Debug.Log("Só pode puxar movendo na direção oposta da caixa.");
         }
     }
 
