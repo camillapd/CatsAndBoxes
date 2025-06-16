@@ -189,7 +189,7 @@ MonoBehaviour:
   moveSpeed: 5
   collisionLayer:
     serializedVersion: 2
-    m_Bits: 13128
+    m_Bits: 9032
   visual: {fileID: 4726874592021381138}
 --- !u!114 &6147916637549241091
 MonoBehaviour:
@@ -236,7 +236,7 @@ MonoBehaviour:
     m_Bits: 2048
   boxLayer:
     serializedVersion: 2
-    m_Bits: 4608
+    m_Bits: 512
   preyObject: {fileID: 0}
   preyLoopObject: {fileID: 0}
   visual: {fileID: 4726874592021381138}

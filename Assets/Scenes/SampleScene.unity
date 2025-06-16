@@ -308,7 +308,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 000000003130b071b9fdac06330d405c
+  m_ApplyToSortingLayers: 000000003130b071b9fdac06330d405c7f8017ec
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -416,9 +416,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 4717370897294974305, guid: 8ebd5219b96d5c242b58c68e619a4acb, type: 3}
-  - {fileID: 2521763778022275914, guid: b6e87cd8b81f576498466cf486398ec1, type: 3}
-  - {fileID: 1509711787429291305, guid: 016a262e0c392bd4b865a819706d2395, type: 3}
+  - {fileID: 592949078999196062, guid: aae752f1eadc9574b854ea174a3eedb7, type: 3}
   gameManager: {fileID: 1522011100}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

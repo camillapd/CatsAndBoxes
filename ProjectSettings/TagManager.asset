@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - Gato
+  - Caixa
+  - Undefined
   layers:
   - Default
   - TransparentFX
@@ -50,6 +52,9 @@ TagManager:
     locked: 0
   - name: Furniture
     uniqueID: 1547701555
+    locked: 0
+  - name: WallsBorder
+    uniqueID: 3960963199
     locked: 0
   m_RenderingLayers:
   - Default
