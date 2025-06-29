@@ -5,10 +5,29 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public LayerMask blockedLayer;
+    public static bool isGameOver = false;
 
     private GameObject gatosParentObject;
     private List<GameObject> allCats = new List<GameObject>();
     private Animator playerAnimator;
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            LevelManager lm = FindFirstObjectByType<LevelManager>();
+            if (lm != null)
+            {
+                Debug.Log("🔄 Reiniciando a fase atual...");
+                lm.LoadLevel(lm.CurrentLevelIndex);
+            }
+            else
+            {
+                Debug.LogError("❌ LevelManager não encontrado!");
+            }
+        }
+
+    }
 
     public void SetPlayerAnimator(Animator animator)
     {
@@ -92,5 +111,12 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         Debug.Log("💥 Game Over! Um gato fugiu!");
+
+        if (isGameOver) return;
+
+        isGameOver = true;
+        Debug.Log("💀 Game Over");
+        playerAnimator.SetTrigger("loseLevel");
+
     }
 }

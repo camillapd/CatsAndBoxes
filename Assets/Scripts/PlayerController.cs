@@ -33,8 +33,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (isMoving)
-            return;
+
+        if (GameManager.isGameOver) return;
+
+        if (isMoving) return;
 
         input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
@@ -48,7 +50,7 @@ public class PlayerController : MonoBehaviour
             lastDirection = input.normalized;
 
         // Interações
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.X))
         {
             if (!pullBoxes.IsPulling)
             {
@@ -59,7 +61,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             if (holdCats != null)
             {
