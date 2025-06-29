@@ -53,6 +53,9 @@ TagManager:
   - name: Furniture
     uniqueID: 1547701555
     locked: 0
+  - name: Outside
+    uniqueID: 854540381
+    locked: 0
   - name: WallsBorder
     uniqueID: 3960963199
     locked: 0
