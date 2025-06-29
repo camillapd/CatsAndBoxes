@@ -7,29 +7,43 @@ public class PreyLoop : MonoBehaviour
     public float moveSpeed = 0.5f;
     public LayerMask obstacleLayer;
 
-
-    private int     PreySteps = 5;
+    private int PreySteps = 5;
     private PreyRun preyRun;
     private Vector2 startPos;
     public Vector2 chosenDir = Vector2.zero;
+
+    private Animator anim;
+    private SpriteRenderer spriteRenderer;
 
     private void Start()
     {
         preyRun = GetComponent<PreyRun>();
         startPos = RoundToGrid(transform.position);
+
+        anim = GetComponentInChildren<Animator>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
         ChooseInitialDirection();
 
         if (chosenDir != Vector2.zero)
+        {
+            if (anim != null)
+                anim.Play("Running"); // força a tocar Running logo no começo
+
             StartCoroutine(MovePrey());
+        }
         else
+        {
             Debug.LogWarning("🐭 Nenhuma direção com 5 tiles livres encontrada!");
+        }
     }
 
     void ChooseInitialDirection()
     {
         Vector2[] directions = {
-        Vector2.up, Vector2.down, Vector2.left, Vector2.right
+            Vector2.right, Vector2.left // só horizontal
         };
+
         foreach (Vector2 dir in directions)
         {
             Vector2 checkPos = startPos;
@@ -58,18 +72,19 @@ public class PreyLoop : MonoBehaviour
         while (true)
         {
             if (preyRun != null && preyRun.IsRunning)
-            {
                 yield return null;
-            }
 
             for (int i = 0; i < PreySteps; i++)
             {
                 startPos += chosenDir;
+
+                if (spriteRenderer != null)
+                    spriteRenderer.flipX = chosenDir.x < 0;
+
                 yield return StartCoroutine(WaitAndMoveTo(startPos));
             }
 
-            chosenDir *= -1.0f;
-
+            chosenDir *= -1.0f; // inverte direção
         }
     }
 
