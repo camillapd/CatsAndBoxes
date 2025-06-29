@@ -11,7 +11,7 @@ public class CatRun : MonoBehaviour
     private Vector2 runDirection;
     private bool runningAway = false;
     private GameManager GM;
-
+    private Animator anim; 
 
     public void InitRun(Vector2 direction)
     {
@@ -24,6 +24,13 @@ public class CatRun : MonoBehaviour
         GetComponent<SpriteRenderer>().enabled = true;
         gameObject.layer = LayerMask.NameToLayer("Default");
         GetComponent<SpriteRenderer>().sortingOrder = 5;
+
+        anim = GetComponent<Animator>(); 
+        if (anim != null)
+        {
+            anim.SetBool("isRunning", true);
+            anim.SetInteger("direction", DirectionToInt(runDirection));
+        }
 
         StartCoroutine(Run());
     }
@@ -42,6 +49,7 @@ public class CatRun : MonoBehaviour
                 if (outside != null)
                 {
                     Debug.Log("💨 O gato fugiu pela " + outside.name + "!");
+                    if (anim != null) anim.SetBool("isRunning", false);
                     Destroy(gameObject);
                     GM.GameOver();
                     yield break;
@@ -50,6 +58,7 @@ public class CatRun : MonoBehaviour
                 runningAway = false;
                 gameObject.layer = LayerMask.NameToLayer("Gatos");
                 Debug.Log("🐾 Gato parou ao bater na parede e pode ser pego de novo!");
+                if (anim != null) anim.SetBool("isRunning", false);
                 yield break;
             }
 
@@ -73,6 +82,7 @@ public class CatRun : MonoBehaviour
                     runningAway = false;
                     gameObject.layer = LayerMask.NameToLayer("Gatos");
                     Debug.Log("🐾 Gato encontrou caixa já ocupada e parou antes.");
+                    if (anim != null) anim.SetBool("isRunning", false);
                     yield break;
                 }
                 else
@@ -81,10 +91,23 @@ public class CatRun : MonoBehaviour
                     gameObject.layer = blockedLayer;
                     boxCol.gameObject.layer = blockedLayer;
                     Debug.Log("🐾 Gato parou em cima da caixa e agora está preso!");
+                    if (anim != null) anim.SetBool("isRunning", false);
                     GM.CheckVictory();
                     yield break;
                 }
             }
+        }
+    }
+
+    private int DirectionToInt(Vector2 dir)
+    {
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            return dir.x > 0 ? 3 : 2; // direita : esquerda
+        }
+        else
+        {
+            return dir.y > 0 ? 0 : 1; // cima : baixo
         }
     }
 }
