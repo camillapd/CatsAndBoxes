@@ -39,15 +39,17 @@ public class CatRun : MonoBehaviour
     IEnumerator Run()
     {
         Vector2 boxSize = new Vector2(0.8f, 0.8f); // ou 1f
-        Vector2 nextPos = (Vector2)transform.position + runDirection; 
-        Collider2D walls = Physics2D.OverlapBox(nextPos, boxSize, 0f, wallsLayer);
 
         while (runningAway)
         {
+            // 👉 Recalcula a cada frame, a partir da posição atual
+            Vector2 nextPos = (Vector2)transform.position + runDirection;
+            Collider2D walls = Physics2D.OverlapBox(nextPos, boxSize, 0f, wallsLayer);
+
+            // Se bateu numa parede ou saiu da arena
             if (walls != null)
             {
                 Collider2D outside = Physics2D.OverlapBox(nextPos, boxSize, 0f, outsideLayer);
-
                 if (outside != null)
                 {
                     Debug.Log("💨 O gato fugiu pela " + outside.name + "!");
@@ -64,70 +66,54 @@ public class CatRun : MonoBehaviour
                 yield break;
             }
 
+            // Se encontrou caixa ocupada no próximo passo, para antes de mover
             Collider2D boxCol = Physics2D.OverlapBox(nextPos, boxSize, 0f, boxLayer);
+            if (boxCol != null && boxCol.GetComponent<BoxState>()?.hasCatInside == true)
+            {
+                runningAway = false;
+                gameObject.layer = LayerMask.NameToLayer("Gatos");
+                Debug.Log("🐾 Gato encontrou caixa já ocupada e parou antes.");
+                if (anim != null) anim.SetBool("isRunning", false);
+                yield break;
+            }
 
+            // Se chegou aqui, o tile está livre: faz a interpolação para nextPos
+            Vector2 initPos = transform.position;
+            float t = 0f;
+            while (t < 1f)
+            {
+                t += Time.deltaTime * moveSpeed;
+                transform.position = Vector2.Lerp(initPos, nextPos, t);
+                yield return null;
+            }
+            transform.position = nextPos;
+
+            // Se entrou numa caixa livre, marca vitória
             if (boxCol != null)
             {
                 BoxState boxState = boxCol.GetComponent<BoxState>();
-
-                if (boxState != null && boxState.hasCatInside)
-                {
-                    runningAway = false;
-                    gameObject.layer = LayerMask.NameToLayer("Gatos");
-                    Debug.Log("🐾 Gato encontrou caixa já ocupada e parou antes.");
-                    if (anim != null) anim.SetBool("isRunning", false);
-                    yield break;
-                }
-
-                // Se chegou aqui, significa que a caixa não está ocupada, pode continuar
-                Vector2 initPos = transform.position;
-                float t = 0f;
-                while (t < 1f)
-                {
-                    t += Time.deltaTime * moveSpeed;
-                    transform.position = Vector2.Lerp(initPos, nextPos, t);
-                    yield return null;
-                }
-                transform.position = nextPos;
-
                 runningAway = false;
                 gameObject.layer = LayerMask.NameToLayer("Gatos");
 
                 boxState.hasCatInside = true;
-
-                CatState catState = GetComponent<CatState>();
+                var catState = GetComponent<CatState>();
                 if (catState != null)
                 {
                     catState.isInsideBox = true;
                     Debug.Log($"🐾 Gato entrou na caixa! isInsideBox = {catState.isInsideBox}");
                 }
-
                 if (anim != null)
                 {
                     anim.SetBool("isRunning", false);
                     anim.SetBool("isOnBox", true);
                 }
-
                 GM.CheckVictory();
-
                 yield break;
             }
-            else
-            {
-                // Se não tem caixa, o gato pode continuar correndo normalmente (sem parar)
-                Vector2 initPos = transform.position;
-                float t = 0f;
-                while (t < 1f)
-                {
-                    t += Time.deltaTime * moveSpeed;
-                    transform.position = Vector2.Lerp(initPos, nextPos, t);
-                    yield return null;
-                }
-                transform.position = nextPos;
-            }
+
+            // Continua fugindo até encontrar parede ou caixa
         }
     }
-
     private int DirectionToInt(Vector2 dir)
     {
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
