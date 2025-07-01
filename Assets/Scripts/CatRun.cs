@@ -22,7 +22,7 @@ public class CatRun : MonoBehaviour
 
         GetComponent<Collider2D>().enabled = true;
         GetComponent<SpriteRenderer>().enabled = true;
-        
+
         gameObject.layer = LayerMask.NameToLayer("Default");
         GetComponent<SpriteRenderer>().sortingOrder = 5;
 
@@ -38,15 +38,15 @@ public class CatRun : MonoBehaviour
 
     IEnumerator Run()
     {
+        Vector2 boxSize = new Vector2(0.8f, 0.8f); // ou 1f
+        Vector2 nextPos = (Vector2)transform.position + runDirection; 
+        Collider2D walls = Physics2D.OverlapBox(nextPos, boxSize, 0f, wallsLayer);
+
         while (runningAway)
         {
-            Vector2 nextPos = (Vector2)transform.position + runDirection;
-
-            Collider2D walls = Physics2D.OverlapCircle(nextPos, 0.1f, wallsLayer);
-
             if (walls != null)
             {
-                Collider2D outside = Physics2D.OverlapCircle(nextPos, 0.1f, outsideLayer);
+                Collider2D outside = Physics2D.OverlapBox(nextPos, boxSize, 0f, outsideLayer);
 
                 if (outside != null)
                 {
@@ -64,7 +64,7 @@ public class CatRun : MonoBehaviour
                 yield break;
             }
 
-            Collider2D boxCol = Physics2D.OverlapCircle(nextPos, 0.1f, boxLayer);
+            Collider2D boxCol = Physics2D.OverlapBox(nextPos, boxSize, 0f, boxLayer);
 
             if (boxCol != null)
             {

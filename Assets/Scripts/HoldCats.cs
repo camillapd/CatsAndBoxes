@@ -133,10 +133,12 @@ public class HoldCats : MonoBehaviour
     public void TryHoldCat()
     {
         Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
+        Vector2 boxSize = new Vector2(0.8f, 0.8f); // um pouco menor que 1x1 pra evitar pegar gatos de tiles vizinhos
+
         foreach (var dir in directions)
         {
-            Vector2 checkPos = (Vector2)transform.position + dir;
-            Collider2D catCol = Physics2D.OverlapCircle(checkPos, 0.1f, catLayer);
+            Vector2 checkPos = RoundToGrid((Vector2)transform.position + dir);
+            Collider2D catCol = Physics2D.OverlapBox(checkPos, boxSize, 0f, catLayer);
 
             if (catCol != null)
             {
@@ -173,9 +175,11 @@ public class HoldCats : MonoBehaviour
         Vector2 dropDir = lastDirection;
         if (dropDir == Vector2.zero) dropDir = Vector2.down;
 
+        Vector2 boxSize = new Vector2(0.8f, 0.8f); // ou 1.0f se quiser o tile todo
+
         Vector2 dropPos = (Vector2)transform.position + dropDir;
-        bool isBlocked = Physics2D.OverlapCircle(dropPos, 0.1f, collisionLayer);
-        Collider2D boxCol = Physics2D.OverlapCircle(dropPos, 0.1f, boxLayer);
+        bool isBlocked = Physics2D.OverlapBox(dropPos, boxSize, 0f, collisionLayer);
+        Collider2D boxCol = Physics2D.OverlapBox(dropPos, boxSize, 0f, boxLayer);
 
         bool boxOccupied = false;
         if (boxCol != null)

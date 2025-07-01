@@ -91,10 +91,13 @@ public class PlayerController : MonoBehaviour
             LayerMask blockedOrCollided = collisionLayer;
 
             Vector2 gridCenter = new Vector2(RoundToGrid(newTargetPos.x), RoundToGrid(newTargetPos.y));
-            bool isBlocked = Physics2D.OverlapCircle(gridCenter, 0.1f, blockedOrCollided);
+            Vector2 boxSize = new Vector2(0.8f, 0.8f); // ou 1.0f, se quiser cobrir exatamente um tile inteiro
+
+            bool isBlocked = Physics2D.OverlapBox(gridCenter, boxSize, 0f, blockedOrCollided);
 
             if (!isBlocked)
                 StartCoroutine(MoveTo(newTargetPos));
+
             // else
             //     Debug.Log("Movimento bloqueado por obstáculo.");
         }

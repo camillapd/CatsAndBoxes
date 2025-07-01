@@ -33,10 +33,12 @@ public class PullBoxes : MonoBehaviour
         }
 
         Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
+        Vector2 boxSize = new Vector2(0.8f, 0.8f);
+
         foreach (var dir in directions)
         {
             Vector2 checkPos = (Vector2)transform.position + dir;
-            Collider2D boxCol = Physics2D.OverlapCircle(checkPos, 0.1f, boxLayer);
+            Collider2D boxCol = Physics2D.OverlapBox(checkPos, boxSize, 0f, boxLayer);
 
             if (boxCol != null)
             {
@@ -84,15 +86,18 @@ public class PullBoxes : MonoBehaviour
         {
             Vector3 newTargetPos = transform.position + new Vector3(moveDir.x, moveDir.y, 0);
             Vector3 newBoxPos = pulledBox.position + new Vector3(moveDir.x, moveDir.y, 0);
-            Collider2D[] hits = Physics2D.OverlapCircleAll(newBoxPos, 0.1f, collisionLayer | boxLayer);
+            Vector2 boxSize = new Vector2(0.8f, 0.8f);
 
-            bool canMovePlayer = !Physics2D.OverlapCircle(newTargetPos, 0.1f, collisionLayer);
+            Collider2D[] hits = Physics2D.OverlapBoxAll(newBoxPos, boxSize, 0f, collisionLayer | boxLayer);
+
+            bool canMovePlayer = !Physics2D.OverlapBox(newTargetPos, boxSize, 0f, collisionLayer);
             bool canMoveBox = true;
 
             foreach (var hit in hits)
             {
                 if (hit.transform == pulledBox)
                     continue;
+
                 canMoveBox = false;
                 break;
             }
@@ -105,6 +110,7 @@ public class PullBoxes : MonoBehaviour
             {
                 Debug.Log("Movimento bloqueado por obstáculo ou caixa.");
             }
+
         }
         else
         {
