@@ -8,7 +8,10 @@ public class GameManager : MonoBehaviour
     public static bool isGameOver = false;
 
     private GameObject gatosParentObject;
-    private List<GameObject> allCats = new List<GameObject>();
+
+    // Agora é público e usa HashSet pra evitar duplicatas
+    private HashSet<GameObject> allCats = new HashSet<GameObject>();
+
     private Animator playerAnimator;
 
     void Update()
@@ -26,7 +29,6 @@ public class GameManager : MonoBehaviour
                 Debug.LogError("❌ LevelManager não encontrado!");
             }
         }
-
     }
 
     public void SetPlayerAnimator(Animator animator)
@@ -57,7 +59,6 @@ public class GameManager : MonoBehaviour
         else
         {
             Debug.Log("😺 Ainda tem gato fora da caixa.");
-            return;
         }
     }
 
@@ -74,20 +75,16 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
-    Vector2 RoundToGrid(Vector2 pos)
-    {
-        return new Vector2(Mathf.Round(pos.x), Mathf.Round(pos.y));
-    }
-
     void WinGame()
     {
         Debug.Log("🏁 Fase vencida!");
         StartCoroutine(WaitAndLoadNextLevel());
     }
 
-    private System.Collections.IEnumerator WaitAndLoadNextLevel()
+    private IEnumerator WaitAndLoadNextLevel()
     {
-        playerAnimator.SetTrigger("winLevel");
+        if (playerAnimator != null)
+            playerAnimator.SetTrigger("winLevel");
 
         yield return new WaitForSeconds(5f);
 
@@ -103,7 +100,7 @@ public class GameManager : MonoBehaviour
             else
             {
                 Debug.Log("🎉 Jogo completo! Todas as fases vencidas!");
-                // Aqui você pode mostrar uma tela de final ou voltar ao menu
+                // Exibir tela final, créditos, voltar ao menu, etc.
             }
         }
     }
@@ -116,7 +113,9 @@ public class GameManager : MonoBehaviour
 
         isGameOver = true;
         Debug.Log("💀 Game Over");
-        playerAnimator.SetTrigger("loseLevel");
 
+        if (playerAnimator != null)
+            playerAnimator.SetTrigger("loseLevel");
     }
+
 }
