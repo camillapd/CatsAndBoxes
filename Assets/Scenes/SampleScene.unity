@@ -400,9 +400,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04e328d5e94217048b372a02b0bf98dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockedLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!114 &1522011102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -416,7 +413,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 4208851457014541784, guid: 10bfb45d81144b64da2af513711fd7de, type: 3}
+  - {fileID: 5863514565672843893, guid: fa8797e928fe6804aa5381800359b89f, type: 3}
   gameManager: {fileID: 1522011100}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

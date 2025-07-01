@@ -4588,6 +4588,14 @@ PrefabInstance:
       propertyPath: m_Tiles.Array.data[131].second.m_TileSpriteIndex
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 4358542915611315704, guid: 2876866b24fa0914b8bc21dabbb3cc52, type: 3}
+      propertyPath: m_SortingLayer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4358542915611315704, guid: 2876866b24fa0914b8bc21dabbb3cc52, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 1547701555
+      objectReference: {fileID: 0}
     - target: {fileID: 6074991083606251743, guid: 2876866b24fa0914b8bc21dabbb3cc52, type: 3}
       propertyPath: m_Name
       value: Grid

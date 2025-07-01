@@ -48,8 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaeff663ae70d2b44ad98d115a79c39e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gatosParent: {fileID: 8477741149849684166, guid: ded6b2f15a08c1547a858de58ce75799, type: 3}
-  caixasParent: {fileID: 4411585333332047727, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
+  gatosParent: {fileID: 7523233690634700228}
+  caixasParent: {fileID: 1380352636499940601}
 --- !u!1 &8417326887573519190
 GameObject:
   m_ObjectHideFlags: 0
@@ -4269,19 +4269,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 750159982612458410, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.5
+      value: -3.5
       objectReference: {fileID: 0}
     - target: {fileID: 750159982612458410, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.5
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 3346078727165098445, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.5
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3346078727165098445, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.5
+      value: -3.5
       objectReference: {fileID: 0}
     - target: {fileID: 4411585333332047727, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4328,12 +4328,16 @@ PrefabInstance:
       value: Caixas
       objectReference: {fileID: 0}
     - target: {fileID: 9148428825681484608, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9148428825681484608, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.5
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 9148428825681484608, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.5
+      value: 1.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
