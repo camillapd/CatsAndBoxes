@@ -30,6 +30,15 @@ public class LevelManager : MonoBehaviour
         if (currentLevel != null)
             Destroy(currentLevel);
 
+        if (gameManager != null)
+        {
+            gameManager.ResetGame();
+        }
+        else
+        {
+            Debug.LogError("GameManager não está atribuído no LevelManager!");
+        }
+
         if (index >= 0 && index < levels.Length)
         {
             currentLevel = Instantiate(levels[index]);

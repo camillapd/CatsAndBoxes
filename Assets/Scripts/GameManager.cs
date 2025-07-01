@@ -4,14 +4,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public LayerMask blockedLayer;
     public static bool isGameOver = false;
 
     private GameObject gatosParentObject;
-
-    // Agora é público e usa HashSet pra evitar duplicatas
     private HashSet<GameObject> allCats = new HashSet<GameObject>();
-
     private Animator playerAnimator;
 
     void Update()
@@ -117,5 +113,13 @@ public class GameManager : MonoBehaviour
         if (playerAnimator != null)
             playerAnimator.SetTrigger("loseLevel");
     }
+
+    public void ResetGame()
+    {
+        isGameOver = false;
+        allCats.Clear();
+        // Resetar outras variáveis de estado, se houver
+    }
+
 
 }
