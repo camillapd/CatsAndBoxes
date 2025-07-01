@@ -107,7 +107,7 @@ public class HoldCats : MonoBehaviour
 
         if (Physics2D.OverlapCircle(pos, radius, catRunLayer))
         {
-            Vector2 oppDirection = -lastDirection;
+            Vector2 oppDirection = lastDirection;
             if (oppDirection == Vector2.zero) oppDirection = Vector2.down;
 
             Vector2 startRun = (Vector2)transform.position + oppDirection;
