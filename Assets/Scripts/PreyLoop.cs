@@ -79,7 +79,7 @@ public class PreyLoop : MonoBehaviour
                 startPos += chosenDir;
 
                 if (spriteRenderer != null)
-                    spriteRenderer.flipX = chosenDir.x < 0;
+                    spriteRenderer.flipX = chosenDir.x > 0;
 
                 yield return StartCoroutine(WaitAndMoveTo(startPos));
             }
