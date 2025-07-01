@@ -11,7 +11,7 @@ public class CatRun : MonoBehaviour
     private Vector2 runDirection;
     private bool runningAway = false;
     private GameManager GM;
-    private Animator anim; 
+    private Animator anim;
 
     public void InitRun(Vector2 direction)
     {
@@ -20,12 +20,17 @@ public class CatRun : MonoBehaviour
         runDirection = direction.normalized;
         runningAway = true;
 
+        // Ativa o gato visualmente e fisicamente
         GetComponent<Collider2D>().enabled = true;
         GetComponent<SpriteRenderer>().enabled = true;
+
+        // Define layer padrão para colisões corretas durante fuga
         gameObject.layer = LayerMask.NameToLayer("Default");
+
+        // Ajusta ordenação para renderizar à frente
         GetComponent<SpriteRenderer>().sortingOrder = 5;
 
-        anim = GetComponent<Animator>(); 
+        anim = GetComponent<Animator>();
         if (anim != null)
         {
             anim.SetBool("isRunning", true);
@@ -40,6 +45,7 @@ public class CatRun : MonoBehaviour
         while (runningAway)
         {
             Vector2 nextPos = (Vector2)transform.position + runDirection;
+
             Collider2D walls = Physics2D.OverlapCircle(nextPos, 0.1f, wallsLayer);
 
             if (walls != null)
@@ -62,39 +68,67 @@ public class CatRun : MonoBehaviour
                 yield break;
             }
 
-            Vector2 InitPos = transform.position;
-            float t = 0;
-            while (t < 1f)
-            {
-                t += Time.deltaTime * moveSpeed;
-                transform.position = Vector2.Lerp(InitPos, nextPos, t);
-                yield return null;
-            }
-
-            transform.position = nextPos;
             Collider2D boxCol = Physics2D.OverlapCircle(nextPos, 0.1f, boxLayer);
-            int blockedLayer = LayerMask.NameToLayer("Travado");
 
             if (boxCol != null)
             {
-                if (boxCol.gameObject.layer == blockedLayer)
+                BoxState boxState = boxCol.GetComponent<BoxState>();
+
+                if (boxState != null && boxState.hasCatInside)
                 {
                     runningAway = false;
                     gameObject.layer = LayerMask.NameToLayer("Gatos");
                     Debug.Log("🐾 Gato encontrou caixa já ocupada e parou antes.");
                     if (anim != null) anim.SetBool("isRunning", false);
-                    yield break;
+                    // Não faz yield break aqui, apenas para o loop e não move o gato
+                    yield break; // Ok aqui para parar o loop antes de mover
                 }
-                else
+
+                // Se chegou aqui, significa que a caixa não está ocupada, pode continuar
+                Vector2 initPos = transform.position;
+                float t = 0f;
+                while (t < 1f)
                 {
-                    runningAway = false;
-                    gameObject.layer = blockedLayer;
-                    boxCol.gameObject.layer = blockedLayer;
-                    Debug.Log("🐾 Gato parou em cima da caixa e agora está preso!");
-                    if (anim != null) anim.SetBool("isRunning", false);
-                    GM.CheckVictory();
-                    yield break;
+                    t += Time.deltaTime * moveSpeed;
+                    transform.position = Vector2.Lerp(initPos, nextPos, t);
+                    yield return null;
                 }
+                transform.position = nextPos;
+
+                runningAway = false;
+                gameObject.layer = LayerMask.NameToLayer("Gatos");
+
+                boxState.hasCatInside = true;
+
+                CatState catState = GetComponent<CatState>();
+                if (catState != null)
+                {
+                    catState.isInsideBox = true;
+                    Debug.Log($"🐾 Gato entrou na caixa! isInsideBox = {catState.isInsideBox}");
+                }
+
+                if (anim != null)
+                {
+                    anim.SetBool("isRunning", false);
+                    anim.SetBool("isOnBox", true);
+                }
+
+                GM.CheckVictory();
+
+                yield break;
+            }
+            else
+            {
+                // Se não tem caixa, o gato pode continuar correndo normalmente (sem parar)
+                Vector2 initPos = transform.position;
+                float t = 0f;
+                while (t < 1f)
+                {
+                    t += Time.deltaTime * moveSpeed;
+                    transform.position = Vector2.Lerp(initPos, nextPos, t);
+                    yield return null;
+                }
+                transform.position = nextPos;
             }
         }
     }
