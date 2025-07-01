@@ -51,11 +51,17 @@ public class PullBoxes : MonoBehaviour
                     return;
                 }
 
-                // Caixa livre pra puxar
+                // Se já está puxando uma caixa diferente, solta a atual antes
+                if (isPulling && pulledBox != null && pulledBox != boxCol.transform)
+                {
+                    ReleaseBox();  // método que você já tem para soltar a caixa
+                }
+
+                // Puxa a nova caixa
                 pulledBox = boxCol.transform;
                 isPulling = true;
-                Debug.Log("Caixa agarrada!");
                 animator.SetBool("isPullingIdle", true);
+                Debug.Log("Caixa agarrada!");
                 return;
             }
         }
@@ -78,10 +84,12 @@ public class PullBoxes : MonoBehaviour
         Vector2 relativeDir = ((Vector2)pulledBox.position - (Vector2)transform.position).normalized;
         Vector2 moveDir = input;
 
+        // Forçar movimento só em um eixo (horizontal ou vertical)
         if (Mathf.Abs(moveDir.x) > 0) moveDir.y = 0;
         else if (Mathf.Abs(moveDir.y) > 0) moveDir.x = 0;
         moveDir = moveDir.normalized;
 
+        // Checa se movimento é contra a direção da caixa (puxar)
         if (Vector2.Dot(moveDir, -relativeDir) > 0.9f)
         {
             Vector3 newTargetPos = transform.position + new Vector3(moveDir.x, moveDir.y, 0);
@@ -97,20 +105,20 @@ public class PullBoxes : MonoBehaviour
             {
                 if (hit.transform == pulledBox)
                     continue;
-
                 canMoveBox = false;
                 break;
             }
 
             if (canMovePlayer && canMoveBox)
             {
+                animator.SetBool("isPullingIdle", false);
                 caller.StartCoroutine(MoveWithBox(newTargetPos, newBoxPos));
             }
             else
             {
+                animator.SetBool("isPullingIdle", true);
                 Debug.Log("Movimento bloqueado por obstáculo ou caixa.");
             }
-
         }
         else
         {
@@ -121,7 +129,12 @@ public class PullBoxes : MonoBehaviour
     IEnumerator MoveWithBox(Vector3 playerDest, Vector3 boxDest)
     {
         isMoving = true;
+
+        // 1) Animação de "puxando em movimento"
         animator.SetBool("isPullingBox", true);
+        // garante que a idle está desligada durante o movimento
+        animator.SetBool("isPullingIdle", false);
+
         Vector3 startPlayerPos = transform.position;
         Vector3 startBoxPos = pulledBox.position;
         float t = 0f;
@@ -134,9 +147,24 @@ public class PullBoxes : MonoBehaviour
             yield return null;
         }
 
-        transform.position = playerDest;
-        pulledBox.position = boxDest;
+        // 2) Snap para o centro do tile
+        transform.position = RoundToGridVector3(playerDest);
+        pulledBox.position = RoundToGridVector3(boxDest);
+
         isMoving = false;
+
+        // 3) Desliga a animação de movimento e
+        //    liga de novo a idle se ainda estiver puxando
         animator.SetBool("isPullingBox", false);
+        animator.SetBool("isPullingIdle", isPulling);
     }
+
+    // Ajusta um Vector3 para o centro do tile (assumindo grid 1x1 com offset 0.5)
+    private Vector3 RoundToGridVector3(Vector3 pos)
+    {
+        float x = Mathf.Floor(pos.x) + 0.5f;
+        float y = Mathf.Floor(pos.y) + 0.5f;
+        return new Vector3(x, y, pos.z);
+    }
+
 }
