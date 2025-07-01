@@ -140,30 +140,35 @@ public class HoldCats : MonoBehaviour
             Vector2 checkPos = RoundToGrid((Vector2)transform.position + dir);
             Collider2D catCol = Physics2D.OverlapBox(checkPos, boxSize, 0f, catLayer);
 
-            if (catCol != null)
-            {
-                CatState catState = catCol.GetComponent<CatState>();
-                if (catState != null)
-                {
-                    if (catState.isInsideBox)
-                    {
-                        animator.SetTrigger("tryPullBlocked");
-                        Debug.Log("❌ Nem pense em tirar o gato da caixa.");
-                        return;
-                    }
-                    else
-                    {
-                        heldCat = catCol.gameObject;
-                        heldCat.transform.position = RoundToGrid(transform.position);
-                        heldCat.GetComponent<SpriteRenderer>().enabled = false;
-                        heldCat.GetComponent<Collider2D>().enabled = false;
-                        isHoldingCat = true;
+            Collider2D[] catHits = Physics2D.OverlapBoxAll(checkPos, boxSize, 0f, catLayer);
 
-                        Debug.Log("🐾 Gato pego!");
-                        return;
-                    }
+            foreach (var hit in catHits)
+            {
+                CatState catState = hit.GetComponent<CatState>();
+                if (catState != null && !catState.isInsideBox)
+                {
+                    heldCat = hit.gameObject;
+                    heldCat.transform.position = RoundToGrid(transform.position);
+                    heldCat.GetComponent<SpriteRenderer>().enabled = false;
+                    heldCat.GetComponent<Collider2D>().enabled = false;
+                    isHoldingCat = true;
+
+                    Debug.Log($"🐾 Gato pego: {heldCat.name}");
+                    return;
                 }
             }
+
+            // Se só achou gatos na caixa
+            if (catHits.Length > 0)
+            {
+                animator.SetTrigger("tryPullBlocked");
+                Debug.Log("❌ Nem pense em tirar o gato da caixa.");
+            }
+            else
+            {
+                Debug.Log("Nenhum gato próximo para pegar.");
+            }
+
         }
         Debug.Log("Nenhum gato próximo para pegar.");
     }
