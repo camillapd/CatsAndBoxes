@@ -34,10 +34,10 @@ public class HoldCats : MonoBehaviour
             animator = visual.GetComponent<Animator>();
     }
 
+    // Checa se jogador passou no caminho da presa segurando gato — faz gato perseguir presa
     void CheckIfPlayerOnPreyPath()
     {
-        if (heldCat == null || preyObject == null)
-            return;
+        if (heldCat == null || preyObject == null) return;
 
         bool preyCatSameAxis = false;
         Vector2 playerPos = RoundToGrid(transform.position);
@@ -93,10 +93,10 @@ public class HoldCats : MonoBehaviour
         }
     }
 
+    // Checa se jogador está sobre um tile de fuga do gato, para ele fugir
     void CheckIfPlayerOnCatRun()
     {
-        if (!isHoldingCat || heldCat == null)
-            return;
+        if (!isHoldingCat || heldCat == null) return;
 
         Vector2 pos = new Vector2(
             RoundToGrid(transform.position.x),
@@ -108,13 +108,13 @@ public class HoldCats : MonoBehaviour
         if (Physics2D.OverlapCircle(pos, radius, catRunLayer))
         {
             Vector2 oppDirection = -lastDirection;
-            if (oppDirection == Vector2.zero)
-                oppDirection = Vector2.down;
+            if (oppDirection == Vector2.zero) oppDirection = Vector2.down;
 
             Vector2 startRun = (Vector2)transform.position + oppDirection;
 
             heldCat.transform.position = new Vector3(startRun.x, startRun.y, -0.1f);
             heldCat.SetActive(true);
+
             heldCat.GetComponent<SpriteRenderer>().enabled = true;
             heldCat.GetComponent<Collider2D>().enabled = true;
 
@@ -181,10 +181,7 @@ public class HoldCats : MonoBehaviour
         if (boxCol != null)
         {
             BoxState boxState = boxCol.GetComponent<BoxState>();
-            if (boxState != null && boxState.hasCatInside)
-            {
-                boxOccupied = true;
-            }
+            if (boxState != null && boxState.hasCatInside) boxOccupied = true;
         }
 
         if (!isBlocked && !boxOccupied)
@@ -216,7 +213,6 @@ public class HoldCats : MonoBehaviour
             }
             else
             {
-                // Soltar no chão
                 heldCat.transform.position = new Vector3(dropPos.x, dropPos.y, -0.1f);
                 heldCat.GetComponent<SpriteRenderer>().enabled = true;
                 heldCat.GetComponent<Collider2D>().enabled = true;
@@ -267,5 +263,4 @@ public class HoldCats : MonoBehaviour
         }
 
     }
-
 }
