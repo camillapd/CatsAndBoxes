@@ -20,14 +20,10 @@ public class CatRun : MonoBehaviour
         runDirection = direction.normalized;
         runningAway = true;
 
-        // Ativa o gato visualmente e fisicamente
         GetComponent<Collider2D>().enabled = true;
         GetComponent<SpriteRenderer>().enabled = true;
-
-        // Define layer padrão para colisões corretas durante fuga
+        
         gameObject.layer = LayerMask.NameToLayer("Default");
-
-        // Ajusta ordenação para renderizar à frente
         GetComponent<SpriteRenderer>().sortingOrder = 5;
 
         anim = GetComponent<Animator>();
@@ -80,8 +76,7 @@ public class CatRun : MonoBehaviour
                     gameObject.layer = LayerMask.NameToLayer("Gatos");
                     Debug.Log("🐾 Gato encontrou caixa já ocupada e parou antes.");
                     if (anim != null) anim.SetBool("isRunning", false);
-                    // Não faz yield break aqui, apenas para o loop e não move o gato
-                    yield break; // Ok aqui para parar o loop antes de mover
+                    yield break;
                 }
 
                 // Se chegou aqui, significa que a caixa não está ocupada, pode continuar
