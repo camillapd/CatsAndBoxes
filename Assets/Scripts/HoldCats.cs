@@ -9,7 +9,6 @@ public class HoldCats : MonoBehaviour
     public LayerMask catRunLayer;
     public LayerMask boxLayer;
     public GameObject preyObject;
-    public GameObject preyLoopObject;
     public Transform visual;
 
     private GameObject heldCat;
@@ -25,14 +24,15 @@ public class HoldCats : MonoBehaviour
         GM = Object.FindAnyObjectByType<GameManager>();
 
         if (preyObject != null)
-            preyScript = preyObject.GetComponent<PreyRun>();
-
-        if (preyLoopObject != null)
-            loopScript = preyLoopObject.GetComponent<PreyLoop>();
+        {
+            preyScript = preyObject.GetComponentInChildren<PreyRun>();
+            loopScript = preyObject.GetComponentInChildren<PreyLoop>();
+        }
 
         if (visual != null)
             animator = visual.GetComponent<Animator>();
     }
+
 
     // Checa se jogador passou no caminho da presa segurando gato — faz gato perseguir presa
     void CheckIfPlayerOnPreyPath()
