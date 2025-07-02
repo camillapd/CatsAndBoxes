@@ -114,6 +114,12 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator MoveTo(Vector3 destination)
     {
+        if (!IsTileFree(destination))
+        {
+            Debug.Log("Movimento bloqueado! Tile ocupado por rato.");
+            yield break; // cancela o movimento
+        }
+
         isMoving = true;
 
         while (Vector3.Distance(transform.position, destination) > 0.01f)
@@ -165,4 +171,17 @@ public class PlayerController : MonoBehaviour
             visual.rotation = Quaternion.Euler(0, 0, 360); // baixo = -90°
         }
     }
+
+    bool IsTileFree(Vector3 pos)
+    {
+        // Ajuste o raio conforme seu grid/tamanho do prey
+        float checkRadius = 0.2f;
+
+        // LayerMask do prey (ratos)
+        LayerMask preyLayer = LayerMask.GetMask("Prey");
+
+        Collider2D hit = Physics2D.OverlapCircle(pos, checkRadius, preyLayer);
+        return hit == null;
+    }
+
 }
