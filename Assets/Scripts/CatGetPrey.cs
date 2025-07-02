@@ -10,6 +10,8 @@ public class CatGetPrey : MonoBehaviour
     private Transform preyTransform;
     private bool chasingPrey;
     private GameManager GM;
+    private Animator anim;
+    private Vector2 runDirection; // Guarda a direção atual do movimento
 
     public void InitChase(Transform prey)
     {
@@ -21,11 +23,18 @@ public class CatGetPrey : MonoBehaviour
         chasingPrey = true;
         StopAllCoroutines();
         StartCoroutine(RunAfterPrey());
+
+        anim = GetComponent<Animator>();
+        if (anim != null)
+        {
+            anim.SetBool("isRunning", true);
+            anim.SetInteger("direction", DirectionToInt(runDirection));
+        }
     }
 
     IEnumerator RunAfterPrey()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.1f);
 
         Vector2[] dirs = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
 
@@ -34,6 +43,7 @@ public class CatGetPrey : MonoBehaviour
             if (preyTransform == null)
             {
                 chasingPrey = false;
+                if (anim != null) anim.SetBool("isRunning", false);
                 yield break;
             }
 
@@ -46,6 +56,7 @@ public class CatGetPrey : MonoBehaviour
             if (dir == Vector2.zero)
             {
                 chasingPrey = false;
+                if (anim != null) anim.SetBool("isRunning", false);
                 Debug.Log("🐾 Gato chegou na presa, parando perseguição.");
                 yield break;
             }
@@ -65,6 +76,13 @@ public class CatGetPrey : MonoBehaviour
                 }
             }
 
+            // Atualiza a direção do movimento para animação
+            runDirection = moveDir;
+            if (anim != null)
+            {
+                anim.SetInteger("direction", DirectionToInt(runDirection));
+            }
+
             Vector2 nextPos = catPos + moveDir;
             Debug.Log($"🐱 Tentando mover para {nextPos} (direção {moveDir})");
             Collider2D walls = Physics2D.OverlapCircle(nextPos, 0.1f, wallsLayer);
@@ -76,12 +94,14 @@ public class CatGetPrey : MonoBehaviour
                 if (outside != null)
                 {
                     Debug.Log("💨 O gato fugiu pela " + outside.name + "!");
+                    if (anim != null) anim.SetBool("isRunning", false);
                     Destroy(gameObject);
                     GM.GameOver();
                     yield break;
                 }
 
                 chasingPrey = false;
+                if (anim != null) anim.SetBool("isRunning", false);
                 Debug.Log("🐾 Gato parou de perseguir.");
                 GM.CheckVictory();
                 yield break;
@@ -112,5 +132,17 @@ public class CatGetPrey : MonoBehaviour
     Vector2 RoundToGrid(Vector2 pos)
     {
         return new Vector2(Mathf.Floor(pos.x) + 0.5f, Mathf.Floor(pos.y) + 0.5f);
+    }
+
+    private int DirectionToInt(Vector2 dir)
+    {
+        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
+        {
+            return dir.x > 0 ? 3 : 2; // direita : esquerda
+        }
+        else
+        {
+            return dir.y > 0 ? 0 : 1; // cima : baixo
+        }
     }
 }
