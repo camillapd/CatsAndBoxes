@@ -36,9 +36,6 @@ public class PreyRun : MonoBehaviour
         isRunning = true;
 
         UpdateAnimationDirection(runDirection);
-        if (anim != null)
-            anim.SetBool("isRunning", true);
-
         StartCoroutine(RunAwayWithDelay());
     }
 
@@ -58,10 +55,6 @@ public class PreyRun : MonoBehaviour
             if (Physics2D.OverlapCircle(nextPos, 0.1f, wallLayer))
             {
                 isRunning = false;
-
-                if (anim != null)
-                    anim.SetBool("isRunning", false);
-
                 visual.enabled = false;
                 Destroy(gameObject, 0.2f);
                 yield break;
@@ -85,10 +78,7 @@ public class PreyRun : MonoBehaviour
     void UpdateAnimationDirection(Vector2 direction)
     {
         if (visual != null)
-            visual.flipX = direction.x > 0;
-
-        if (anim != null)
-            anim.SetInteger("direction", DirectionToInt(direction));
+            visual.flipX = direction.x < 0;
     }
 
     Vector2 RoundToGrid(Vector2 pos)
@@ -100,16 +90,5 @@ public class PreyRun : MonoBehaviour
     {
         StopAllCoroutines();
         transform.position = RoundToGrid(transform.position);
-
-        if (anim != null)
-            anim.SetBool("isRunning", false);
-    }
-
-    int DirectionToInt(Vector2 dir)
-    {
-        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
-            return dir.x > 0 ? 3 : 2; // direita : esquerda
-        else
-            return dir.y > 0 ? 0 : 1; // cima : baixo
     }
 }

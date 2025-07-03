@@ -28,13 +28,9 @@ public class PreyLoop : MonoBehaviour
         if (chosenDir != Vector2.zero)
         {
             if (anim != null)
-                anim.Play("Running"); // força a tocar Running logo no começo
+                anim.Play("Running");
 
             StartCoroutine(MovePrey());
-        }
-        else
-        {
-            Debug.LogWarning("🐭 Nenhuma direção com 5 tiles livres encontrada!");
         }
     }
 
@@ -82,12 +78,12 @@ public class PreyLoop : MonoBehaviour
 
                 if (spriteRenderer != null)
                     spriteRenderer.flipX = chosenDir.x > 0;
-                
+
                 yield return StartCoroutine(WaitAndMoveTo(startPos));
             }
 
             chosenDir *= -1.0f; // inverte direção
-            
+
         }
     }
 
