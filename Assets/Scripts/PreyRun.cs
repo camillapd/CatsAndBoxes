@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-
 public class PreyRun : MonoBehaviour
 {
     public float runSpeed = 10f;
@@ -9,7 +8,6 @@ public class PreyRun : MonoBehaviour
 
     private bool isRunning = false;
     private Collider2D col;
-    private SpriteRenderer sprite;
     private Animator anim;
     private SpriteRenderer visual;
 
@@ -19,9 +17,8 @@ public class PreyRun : MonoBehaviour
     void Start()
     {
         col = GetComponent<Collider2D>();
-        sprite = GetComponent<SpriteRenderer>();
         anim = GetComponentInChildren<Animator>();
-        visual = GetComponentInChildren<SpriteRenderer>(); // ou GetComponent<SpriteRenderer>()
+        visual = GetComponentInChildren<SpriteRenderer>();
     }
 
     public void InitRun(Vector2 direction)
@@ -30,18 +27,17 @@ public class PreyRun : MonoBehaviour
 
         transform.position = RoundToGrid(transform.position);
 
+        PreyLoop preyLoop = GetComponent<PreyLoop>();
+        if (preyLoop != null)
+            preyLoop.isActive = false;
+
         col.enabled = true;
         runDirection = direction.normalized;
         isRunning = true;
 
+        UpdateAnimationDirection(runDirection);
         if (anim != null)
-        {
             anim.SetBool("isRunning", true);
-            anim.SetInteger("direction", DirectionToInt(runDirection));
-        }
-
-        if (visual != null)
-            visual.flipX = runDirection.x < 0;
 
         StartCoroutine(RunAwayWithDelay());
     }
@@ -66,7 +62,7 @@ public class PreyRun : MonoBehaviour
                 if (anim != null)
                     anim.SetBool("isRunning", false);
 
-                sprite.enabled = false;
+                visual.enabled = false;
                 Destroy(gameObject, 0.2f);
                 yield break;
             }
@@ -84,6 +80,15 @@ public class PreyRun : MonoBehaviour
 
             transform.position = nextPos;
         }
+    }
+
+    void UpdateAnimationDirection(Vector2 direction)
+    {
+        if (visual != null)
+            visual.flipX = direction.x > 0;
+
+        if (anim != null)
+            anim.SetInteger("direction", DirectionToInt(direction));
     }
 
     Vector2 RoundToGrid(Vector2 pos)

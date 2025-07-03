@@ -9,6 +9,7 @@ public class HoldCats : MonoBehaviour
     public LayerMask catRunLayer;
     public LayerMask boxLayer;
     public GameObject preyObject;
+
     public Transform visual;
 
     private GameObject heldCat;
@@ -19,6 +20,8 @@ public class HoldCats : MonoBehaviour
     private GameManager GM;
     private Animator animator;
 
+    private GameObject preyLoopObject;
+
     void Start()
     {
         GM = Object.FindAnyObjectByType<GameManager>();
@@ -27,6 +30,7 @@ public class HoldCats : MonoBehaviour
         {
             preyScript = preyObject.GetComponentInChildren<PreyRun>();
             loopScript = preyObject.GetComponentInChildren<PreyLoop>();
+            preyLoopObject = preyObject.GetComponentInChildren<PreyLoop>()?.gameObject;
         }
 
         if (visual != null)
@@ -37,11 +41,10 @@ public class HoldCats : MonoBehaviour
     // Checa se jogador passou no caminho da presa segurando gato — faz gato perseguir presa
     void CheckIfPlayerOnPreyPath()
     {
-        if (heldCat == null || preyObject == null) return;
+        if (heldCat == null || preyLoopObject == null) return;
 
-        bool preyCatSameAxis = false;
         Vector2 playerPos = RoundToGrid(transform.position);
-        Vector2 preyPos = RoundToGrid(preyObject.transform.position);
+        Vector2 preyPos = RoundToGrid(preyLoopObject.transform.position);
         Vector2 preyChosenDir = loopScript.chosenDir;
         Vector2 preyNextPos = preyPos + preyChosenDir;
 
@@ -50,18 +53,7 @@ public class HoldCats : MonoBehaviour
 
         bool isMovingTowardsCat = distanceNow > distanceNext;
 
-        if (preyChosenDir == Vector2.up || preyChosenDir == Vector2.down)
-        {
-            preyCatSameAxis = preyPos.x == playerPos.x;
-            if (preyCatSameAxis)
-                Debug.Log("🐭 Presa e 🐱 Jogador estão no mesmo X");
-        }
-        else
-        {
-            preyCatSameAxis = preyNextPos.y == playerPos.y;
-            if (preyCatSameAxis)
-                Debug.Log("🐭 Presa e 🐱 Jogador estão no mesmo Y");
-        }
+        bool preyCatSameAxis = preyPos.y == playerPos.y;
 
         if (preyCatSameAxis && isMovingTowardsCat)
         {
@@ -81,7 +73,7 @@ public class HoldCats : MonoBehaviour
             CatGetPrey catScript = heldCat.GetComponent<CatGetPrey>();
             if (catScript != null)
             {
-                catScript.InitChase(preyObject.transform);
+                catScript.InitChase(preyLoopObject.transform);
                 Debug.Log("🐱 Gato iniciou perseguição!");
             }
 

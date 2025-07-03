@@ -6,12 +6,12 @@ public class PreyLoop : MonoBehaviour
 {
     public float moveSpeed = 0.5f;
     public LayerMask obstacleLayer;
+    public Vector2 chosenDir = Vector2.zero;
+    public bool isActive = true;
 
     private int PreySteps = 5;
     private PreyRun preyRun;
     private Vector2 startPos;
-    public Vector2 chosenDir = Vector2.zero;
-
     private Animator anim;
     private SpriteRenderer spriteRenderer;
 
@@ -69,10 +69,12 @@ public class PreyLoop : MonoBehaviour
 
     IEnumerator MovePrey()
     {
-        while (true)
+        while (isActive)
         {
             if (preyRun != null && preyRun.IsRunning)
-                yield return null;
+            {
+                yield break;
+            }
 
             for (int i = 0; i < PreySteps; i++)
             {
@@ -80,11 +82,12 @@ public class PreyLoop : MonoBehaviour
 
                 if (spriteRenderer != null)
                     spriteRenderer.flipX = chosenDir.x > 0;
-
+                
                 yield return StartCoroutine(WaitAndMoveTo(startPos));
             }
 
             chosenDir *= -1.0f; // inverte direção
+            
         }
     }
 
@@ -102,10 +105,11 @@ public class PreyLoop : MonoBehaviour
         {
             t += Time.deltaTime * moveSpeed;
             transform.position = Vector2.Lerp(start, finalPos, t);
+
             yield return null;
         }
-
         transform.position = finalPos;
+
     }
 
     Vector2 RoundToGrid(Vector2 pos)
