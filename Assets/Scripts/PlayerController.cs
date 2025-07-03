@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
         if (visual != null)
             animator = visual.GetComponent<Animator>();
 
+        // Alinha posição ao grid na inicialização
         transform.position = new Vector3(
             RoundToGrid(transform.position.x),
             RoundToGrid(transform.position.y),
@@ -33,9 +34,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
         if (GameManager.isGameOver) return;
-
         if (isMoving) return;
 
         input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -53,9 +52,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X))
         {
             if (!pullBoxes.IsPulling)
-            {
                 pullBoxes.TryPullBox();
-            }
             else
                 pullBoxes.ReleaseBox();
             return;
@@ -73,7 +70,6 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // Cálculo de destino
         Vector3 currentPos = new Vector3(
             RoundToGrid(transform.position.x),
             RoundToGrid(transform.position.y),
@@ -82,24 +78,38 @@ public class PlayerController : MonoBehaviour
 
         Vector3 newTargetPos = currentPos + new Vector3(input.x, input.y, 0);
 
+        // Verifica se o movimento cruza com o rato (prey)
+        bool blockedByPrey = false;
+        if (holdCats != null && holdCats.preyObject != null)
+        {
+            var preyObj = holdCats.preyObject;
+            var preyLoop = preyObj.GetComponentInChildren<PreyLoop>();
+
+            if (preyLoop != null)
+            {
+                Vector3 preyPos = preyObj.transform.position;
+                Vector3 preyNextPos = preyPos + (Vector3)preyLoop.chosenDir;
+
+                blockedByPrey = IsCrossingMovement(currentPos, newTargetPos, preyPos, preyNextPos);
+
+                if (blockedByPrey)
+                    Debug.Log($"Movimento bloqueado: Jogador {currentPos}→{newTargetPos}, Rato {preyPos}→{preyNextPos}");
+            }
+        }
+
         if (pullBoxes != null && pullBoxes.IsPulling)
         {
             pullBoxes.HandleBoxMovement(input, this);
         }
         else
         {
-            LayerMask blockedOrCollided = collisionLayer;
-
             Vector2 gridCenter = new Vector2(RoundToGrid(newTargetPos.x), RoundToGrid(newTargetPos.y));
-            Vector2 boxSize = new Vector2(0.8f, 0.8f); // ou 1.0f, se quiser cobrir exatamente um tile inteiro
+            Vector2 boxSize = new Vector2(0.8f, 0.8f);
 
-            bool isBlocked = Physics2D.OverlapBox(gridCenter, boxSize, 0f, blockedOrCollided);
+            bool isBlocked = Physics2D.OverlapBox(gridCenter, boxSize, 0f, collisionLayer);
 
-            if (!isBlocked)
+            if (!isBlocked && !blockedByPrey)
                 StartCoroutine(MoveTo(newTargetPos));
-
-            // else
-            //     Debug.Log("Movimento bloqueado por obstáculo.");
         }
 
         // Atualiza animação e visual
@@ -112,23 +122,54 @@ public class PlayerController : MonoBehaviour
             holdCats.NotifyMoveIntent(lastDirection);
     }
 
+    bool IsCrossingMovement(Vector3 playerCurrent, Vector3 playerNext, Vector3 preyCurrent, Vector3 preyNext)
+    {
+        // Troca simples de posição
+        if (playerNext == preyCurrent && preyNext == playerCurrent)
+            return true;
+
+        // Mesmo eixo X, distância 1 tile, movendo-se verticalmente em direções opostas
+        if (Mathf.Approximately(playerCurrent.x, preyCurrent.x))
+        {
+            float distY = Mathf.Abs(playerCurrent.y - preyCurrent.y);
+            if (Mathf.Approximately(distY, 1f))
+            {
+                float playerDirY = playerNext.y - playerCurrent.y;
+                float preyDirY = preyNext.y - preyCurrent.y;
+                if (playerDirY * preyDirY < 0)
+                    return true;
+            }
+        }
+
+        // Mesmo eixo Y, distância 1 tile, movendo-se horizontalmente em direções opostas
+        if (Mathf.Approximately(playerCurrent.y, preyCurrent.y))
+        {
+            float distX = Mathf.Abs(playerCurrent.x - preyCurrent.x);
+            if (Mathf.Approximately(distX, 1f))
+            {
+                float playerDirX = playerNext.x - playerCurrent.x;
+                float preyDirX = preyNext.x - preyCurrent.x;
+                if (playerDirX * preyDirX < 0)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
     IEnumerator MoveTo(Vector3 destination)
     {
         if (!IsTileFree(destination))
         {
             Debug.Log("Movimento bloqueado! Tile ocupado por rato.");
-            yield break; // cancela o movimento
+            yield break;
         }
 
         isMoving = true;
 
         while (Vector3.Distance(transform.position, destination) > 0.01f)
         {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                destination,
-                moveSpeed * Time.deltaTime
-            );
+            transform.position = Vector3.MoveTowards(transform.position, destination, moveSpeed * Time.deltaTime);
             yield return null;
         }
 
@@ -139,12 +180,8 @@ public class PlayerController : MonoBehaviour
             holdCats.NotifyArrived();
     }
 
-    float RoundToGrid(float value)
-    {
-        return Mathf.Floor(value) + 0.5f;
-    }
+    float RoundToGrid(float value) => Mathf.Floor(value) + 0.5f;
 
-    // 👇 Método para girar ou espelhar o visual com base na direção
     void UpdateVisualDirection(Vector2 dir)
     {
         if (dir == Vector2.zero || visual == null)
@@ -154,34 +191,23 @@ public class PlayerController : MonoBehaviour
         visual.rotation = Quaternion.identity;
 
         if (dir.x < 0)
-        {
-            visual.localScale = new Vector3(-1, 1, 1); // esquerda = espelhado
-        }
+            visual.localScale = new Vector3(-1, 1, 1);
         else if (dir.x > 0)
-        {
-            visual.localScale = new Vector3(1, 1, 1); // direita = normal
-        }
+            visual.localScale = new Vector3(1, 1, 1);
         else if (dir.y > 0)
-        {
-            visual.rotation = Quaternion.Euler(0, 0, 360); // cima = 90°
-        }
+            visual.rotation = Quaternion.Euler(0, 0, 360); // rotaciona para cima
         else if (dir.y < 0)
         {
-            visual.localScale = new Vector3(-1, 1, 1); // esquerda = espelhado
-            visual.rotation = Quaternion.Euler(0, 0, 360); // baixo = -90°
+            visual.localScale = new Vector3(-1, 1, 1);
+            visual.rotation = Quaternion.Euler(0, 0, 360); // rotaciona para baixo
         }
     }
 
     bool IsTileFree(Vector3 pos)
     {
-        // Ajuste o raio conforme seu grid/tamanho do prey
-        float checkRadius = 0.2f;
-
-        // LayerMask do prey (ratos)
+        float checkRadius = 0.4f;
         LayerMask preyLayer = LayerMask.GetMask("Prey");
-
         Collider2D hit = Physics2D.OverlapCircle(pos, checkRadius, preyLayer);
         return hit == null;
     }
-
 }
