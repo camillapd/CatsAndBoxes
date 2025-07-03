@@ -49,8 +49,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaeff663ae70d2b44ad98d115a79c39e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gatosParent: {fileID: 8477741149849684166, guid: ded6b2f15a08c1547a858de58ce75799, type: 3}
-  caixasParent: {fileID: 4411585333332047727, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
+  gatosParent: {fileID: 7598513844945587442}
+  caixasParent: {fileID: 834004096480258722}
 --- !u!1001 &1709368890792164500
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -59,6 +59,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8331773232398316063}
     m_Modifications:
+    - target: {fileID: 3176574811228375671, guid: 39de15ad51b735345aff3c4178b5ddf8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4123961210425758118, guid: 39de15ad51b735345aff3c4178b5ddf8, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4123961210425758118, guid: 39de15ad51b735345aff3c4178b5ddf8, type: 3}
+      propertyPath: m_EdgeRadius
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4760911442072630972, guid: 39de15ad51b735345aff3c4178b5ddf8, type: 3}
+      propertyPath: playerTransform
+      value: 
+      objectReference: {fileID: 2392080256595250945}
     - target: {fileID: 6587274602055471618, guid: 39de15ad51b735345aff3c4178b5ddf8, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.5
@@ -115,6 +131,11 @@ PrefabInstance:
 --- !u!4 &7044605752362650196 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8537578496300086976, guid: 39de15ad51b735345aff3c4178b5ddf8, type: 3}
+  m_PrefabInstance: {fileID: 1709368890792164500}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7087927147079780652 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8495343455370540472, guid: 39de15ad51b735345aff3c4178b5ddf8, type: 3}
   m_PrefabInstance: {fileID: 1709368890792164500}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2077747938823373876
@@ -213,7 +234,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 750159982612458410, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.5
+      value: -3.5
       objectReference: {fileID: 0}
     - target: {fileID: 750159982612458410, guid: 0f98a4756dfd93945a1dcd31597ec66b, type: 3}
       propertyPath: m_LocalPosition.y
@@ -297,6 +318,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8331773232398316063}
     m_Modifications:
+    - target: {fileID: 4546285021457784772, guid: f41b67e0d12c58147b754012aad1dc45, type: 3}
+      propertyPath: preyObject
+      value: 
+      objectReference: {fileID: 7087927147079780652}
+    - target: {fileID: 6625534629128196513, guid: f41b67e0d12c58147b754012aad1dc45, type: 3}
+      propertyPath: preyObject
+      value: 
+      objectReference: {fileID: 7087927147079780652}
+    - target: {fileID: 6625534629128196513, guid: f41b67e0d12c58147b754012aad1dc45, type: 3}
+      propertyPath: preyLoopObject
+      value: 
+      objectReference: {fileID: 7087927147079780652}
     - target: {fileID: 6688815704470435732, guid: f41b67e0d12c58147b754012aad1dc45, type: 3}
       propertyPath: m_Name
       value: Jogador
