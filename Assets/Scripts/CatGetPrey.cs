@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CatGetPrey : MonoBehaviour
 {
-    public float chaseSpeed = 12f;
+    public float chaseSpeed = 6f;
     public LayerMask wallsLayer;
     public LayerMask outsideLayer;
 
@@ -18,17 +18,15 @@ public class CatGetPrey : MonoBehaviour
     {
         GM = Object.FindAnyObjectByType<GameManager>();
 
-        Debug.Log("🐱 InitChase foi chamado!");
         transform.position = RoundToGrid(transform.position);
         preyTransform = prey;
         chasingPrey = true;
         StopAllCoroutines();
 
-        anim = GetComponent<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-
         StartCoroutine(RunAfterPrey());
 
+        anim = GetComponent<Animator>();
         if (anim != null)
         {
             anim.SetBool("isRunning", true);
@@ -56,7 +54,16 @@ public class CatGetPrey : MonoBehaviour
             {
                 chasingPrey = false;
                 if (anim != null) anim.SetBool("isRunning", false);
-                Debug.Log("🐾 Gato chegou na presa, parando perseguição.");
+
+                if (preyTransform != null)
+                {
+                    PreyRun preyRunScript = preyTransform.GetComponent<PreyRun>();
+                    if (preyRunScript != null)
+                        preyRunScript.Disappear();
+                    else
+                        Destroy(preyTransform.gameObject);
+                }
+
                 yield break;
             }
 
@@ -83,8 +90,6 @@ public class CatGetPrey : MonoBehaviour
             if (spriteRenderer != null)
                 spriteRenderer.flipX = runDirection.x < 0;
 
-            Debug.Log($"🐱 runDirection: {runDirection}, direção int: {DirectionToInt(runDirection)}");
-
             Vector2 nextPos = catPos + moveDir;
 
             Collider2D walls = Physics2D.OverlapCircle(nextPos, 0.1f, wallsLayer);
@@ -95,7 +100,6 @@ public class CatGetPrey : MonoBehaviour
 
                 if (outside != null)
                 {
-                    Debug.Log("💨 O gato fugiu pela " + outside.name + "!");
                     if (anim != null) anim.SetBool("isRunning", false);
                     Destroy(gameObject);
                     GM.GameOver();
@@ -104,7 +108,6 @@ public class CatGetPrey : MonoBehaviour
 
                 chasingPrey = false;
                 if (anim != null) anim.SetBool("isRunning", false);
-                Debug.Log("🐾 Gato parou de perseguir.");
                 GM.CheckVictory();
                 yield break;
             }

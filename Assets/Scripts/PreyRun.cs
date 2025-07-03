@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 public class PreyRun : MonoBehaviour
 {
-    public float runSpeed = 10f;
+    public float runSpeed = 8f;
     public LayerMask wallLayer;
     public Vector2 runDirection;
 
@@ -11,7 +11,6 @@ public class PreyRun : MonoBehaviour
     private Animator anim;
     private SpriteRenderer visual;
 
-    public float startDelay = 0.2f;
     public bool IsRunning => isRunning;
 
     void Start()
@@ -20,10 +19,12 @@ public class PreyRun : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         visual = GetComponentInChildren<SpriteRenderer>();
     }
-
     public void InitRun(Vector2 direction)
     {
         if (isRunning) return;
+        isRunning = true;
+
+        StopAllCoroutines(); // ← ESSENCIAL
 
         transform.position = RoundToGrid(transform.position);
 
@@ -33,16 +34,8 @@ public class PreyRun : MonoBehaviour
 
         col.enabled = true;
         runDirection = direction.normalized;
-        isRunning = true;
-
         UpdateAnimationDirection(runDirection);
-        StartCoroutine(RunAwayWithDelay());
-    }
-
-    IEnumerator RunAwayWithDelay()
-    {
-        yield return new WaitForSeconds(startDelay);
-        yield return StartCoroutine(RunAway());
+        StartCoroutine(RunAway());
     }
 
     IEnumerator RunAway()
@@ -50,13 +43,13 @@ public class PreyRun : MonoBehaviour
         while (isRunning)
         {
             Vector2 currentPos = RoundToGrid(transform.position);
+            transform.position = currentPos; // <- CORRIGE a posição antes de começar a andar
+
             Vector2 nextPos = currentPos + runDirection;
 
             if (Physics2D.OverlapCircle(nextPos, 0.1f, wallLayer))
             {
-                isRunning = false;
-                visual.enabled = false;
-                Destroy(gameObject, 0.2f);
+                Disappear();
                 yield break;
             }
 
@@ -78,7 +71,7 @@ public class PreyRun : MonoBehaviour
     void UpdateAnimationDirection(Vector2 direction)
     {
         if (visual != null)
-            visual.flipX = direction.x < 0;
+            visual.flipX = direction.x > 0;
     }
 
     Vector2 RoundToGrid(Vector2 pos)
@@ -86,9 +79,14 @@ public class PreyRun : MonoBehaviour
         return new Vector2(Mathf.Floor(pos.x) + 0.5f, Mathf.Floor(pos.y) + 0.5f);
     }
 
-    public void StopMoving()
+    public void Disappear()
     {
-        StopAllCoroutines();
-        transform.position = RoundToGrid(transform.position);
+        isRunning = false;
+
+        if (visual != null)
+            visual.enabled = false;
+
+        Destroy(gameObject, 0.2f);
     }
+
 }

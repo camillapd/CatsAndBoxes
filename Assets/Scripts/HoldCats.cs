@@ -3,7 +3,6 @@ using System.Collections;
 
 public class HoldCats : MonoBehaviour
 {
-    public float moveSpeed = 5f;
     public LayerMask collisionLayer;
     public LayerMask catLayer;
     public LayerMask catRunLayer;
@@ -37,8 +36,6 @@ public class HoldCats : MonoBehaviour
             animator = visual.GetComponent<Animator>();
     }
 
-
-    // Checa se jogador passou no caminho da presa segurando gato — faz gato perseguir presa
     void CheckIfPlayerOnPreyPath()
     {
         if (heldCat == null || preyLoopObject == null) return;
@@ -52,18 +49,21 @@ public class HoldCats : MonoBehaviour
         float distanceNext = (playerPos - preyNextPos).sqrMagnitude;
 
         bool isMovingTowardsCat = distanceNow > distanceNext;
-
         bool preyCatSameAxis = preyPos.y == playerPos.y;
 
         if (preyCatSameAxis && isMovingTowardsCat)
         {
-            Debug.Log("🐱 Jogador passou no próximo tile da presa segurando o gato.");
-
-            preyScript.StopMoving();
-
             Vector2 fleeDir = -preyChosenDir;
-            Vector2 dirPlayerToPrey = (preyPos - playerPos).normalized;
+            Vector2 rawDir = preyPos - playerPos;
+            Vector2 dirPlayerToPrey = Vector2.zero;
+
+            if (Mathf.Abs(rawDir.x) > Mathf.Abs(rawDir.y))
+                dirPlayerToPrey = new Vector2(Mathf.Sign(rawDir.x), 0);
+            else
+                dirPlayerToPrey = new Vector2(0, Mathf.Sign(rawDir.y));
+
             Vector2 catStartPos = playerPos + dirPlayerToPrey;
+
 
             heldCat.transform.position = new Vector3(catStartPos.x, catStartPos.y, -0.1f);
             heldCat.SetActive(true);
@@ -74,18 +74,14 @@ public class HoldCats : MonoBehaviour
             if (catScript != null)
             {
                 catScript.InitChase(preyLoopObject.transform);
-                Debug.Log("🐱 Gato iniciou perseguição!");
             }
 
             preyScript.InitRun(fleeDir);
-            Debug.Log("🐭 Presa iniciou fuga!");
-
             heldCat = null;
             isHoldingCat = false;
         }
     }
 
-    // Checa se jogador está sobre um tile de fuga do gato, para ele fugir
     void CheckIfPlayerOnCatRun()
     {
         if (!isHoldingCat || heldCat == null) return;
@@ -114,7 +110,6 @@ public class HoldCats : MonoBehaviour
             if (scriptCatRun != null)
             {
                 scriptCatRun.InitRun(oppDirection);
-                Debug.Log("😿 Gato se assustou e fugiu!");
             }
 
             heldCat = null;
@@ -125,7 +120,7 @@ public class HoldCats : MonoBehaviour
     public void TryHoldCat()
     {
         Vector2[] directions = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
-        Vector2 boxSize = new Vector2(0.8f, 0.8f); // um pouco menor que 1x1 pra evitar pegar gatos de tiles vizinhos
+        Vector2 boxSize = new Vector2(0.8f, 0.8f);
 
         foreach (var dir in directions)
         {
@@ -144,25 +139,15 @@ public class HoldCats : MonoBehaviour
                     heldCat.GetComponent<SpriteRenderer>().enabled = false;
                     heldCat.GetComponent<Collider2D>().enabled = false;
                     isHoldingCat = true;
-
-                    Debug.Log($"🐾 Gato pego: {heldCat.name}");
                     return;
                 }
             }
 
-            // Se só achou gatos na caixa
             if (catHits.Length > 0)
             {
                 animator.SetTrigger("tryPullBlocked");
-                Debug.Log("❌ Nem pense em tirar o gato da caixa.");
             }
-            else
-            {
-                Debug.Log("Nenhum gato próximo para pegar.");
-            }
-
         }
-        Debug.Log("Nenhum gato próximo para pegar.");
     }
 
     public void ReleaseCat()
@@ -192,7 +177,6 @@ public class HoldCats : MonoBehaviour
                 BoxState boxState = boxCol.GetComponent<BoxState>();
                 if (boxState != null && boxState.hasCatInside)
                 {
-                    Debug.Log("❌ Essa caixa já está ocupada. Não é possível soltar o gato aqui.");
                     return;
                 }
 
@@ -208,7 +192,6 @@ public class HoldCats : MonoBehaviour
                 }
 
                 heldCat.GetComponent<CatState>().isInsideBox = true;
-                Debug.Log("🐾 Gato colocado na caixa. Agora está travado.");
                 SetIsOnBox();
                 GM.CheckVictory();
             }
@@ -217,15 +200,10 @@ public class HoldCats : MonoBehaviour
                 heldCat.transform.position = new Vector3(dropPos.x, dropPos.y, -0.1f);
                 heldCat.GetComponent<SpriteRenderer>().enabled = true;
                 heldCat.GetComponent<Collider2D>().enabled = true;
-                Debug.Log("🐾 Gato solto normalmente.");
             }
 
             heldCat = null;
             isHoldingCat = false;
-        }
-        else
-        {
-            Debug.Log("❌ Não é possível soltar o gato aqui. Direção bloqueada ou caixa ocupada.");
         }
     }
 
