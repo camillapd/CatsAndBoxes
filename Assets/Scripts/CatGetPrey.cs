@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CatGetPrey : MonoBehaviour
 {
-    public float chaseSpeed = 2f;
+    public float chaseSpeed = 12f;
     public LayerMask wallsLayer;
     public LayerMask outsideLayer;
 
@@ -11,7 +11,8 @@ public class CatGetPrey : MonoBehaviour
     private bool chasingPrey;
     private GameManager GM;
     private Animator anim;
-    private Vector2 runDirection; // Guarda a direção atual do movimento
+    private Vector2 runDirection; // direção atual do movimento
+    private SpriteRenderer spriteRenderer;
 
     public void InitChase(Transform prey)
     {
@@ -22,20 +23,20 @@ public class CatGetPrey : MonoBehaviour
         preyTransform = prey;
         chasingPrey = true;
         StopAllCoroutines();
-        StartCoroutine(RunAfterPrey());
 
         anim = GetComponent<Animator>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        StartCoroutine(RunAfterPrey());
+
         if (anim != null)
         {
             anim.SetBool("isRunning", true);
-            anim.SetInteger("direction", DirectionToInt(runDirection));
         }
     }
 
     IEnumerator RunAfterPrey()
     {
-        yield return new WaitForSeconds(0.1f);
-
         Vector2[] dirs = { Vector2.up, Vector2.down, Vector2.left, Vector2.right };
 
         while (chasingPrey)
@@ -49,8 +50,6 @@ public class CatGetPrey : MonoBehaviour
 
             Vector2 catPos = RoundToGrid(transform.position);
             Vector2 preyPos = RoundToGrid(preyTransform.position);
-            Debug.Log($"🐱 Cat at {catPos}, prey at {preyPos}");
-
             Vector2 dir = preyPos - catPos;
 
             if (dir == Vector2.zero)
@@ -76,15 +75,18 @@ public class CatGetPrey : MonoBehaviour
                 }
             }
 
-            // Atualiza a direção do movimento para animação
             runDirection = moveDir;
+
             if (anim != null)
-            {
                 anim.SetInteger("direction", DirectionToInt(runDirection));
-            }
+
+            if (spriteRenderer != null)
+                spriteRenderer.flipX = runDirection.x < 0;
+
+            Debug.Log($"🐱 runDirection: {runDirection}, direção int: {DirectionToInt(runDirection)}");
 
             Vector2 nextPos = catPos + moveDir;
-            Debug.Log($"🐱 Tentando mover para {nextPos} (direção {moveDir})");
+
             Collider2D walls = Physics2D.OverlapCircle(nextPos, 0.1f, wallsLayer);
 
             if (walls != null)
@@ -113,19 +115,12 @@ public class CatGetPrey : MonoBehaviour
 
     IEnumerator Mover(Vector2 direction)
     {
-        Vector2 startPos = transform.position;
-        Vector2 endPos = startPos + direction;
-        float duration = 1f / chaseSpeed;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
+        Vector2 endPos = (Vector2)transform.position + direction;
+        while (Vector2.Distance(transform.position, endPos) > 0.01f)
         {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            transform.position = Vector2.Lerp(startPos, endPos, t);
+            transform.position = Vector2.MoveTowards(transform.position, endPos, chaseSpeed * Time.deltaTime);
             yield return null;
         }
-
         transform.position = endPos;
     }
 
@@ -136,13 +131,10 @@ public class CatGetPrey : MonoBehaviour
 
     private int DirectionToInt(Vector2 dir)
     {
-        if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
-        {
+        // Força animação apenas para esquerda/direita
+        if (Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
             return dir.x > 0 ? 3 : 2; // direita : esquerda
-        }
         else
-        {
-            return dir.y > 0 ? 0 : 1; // cima : baixo
-        }
+            return dir.y > 0 ? 0 : 1; // cima : baixo (se precisar manter)
     }
 }
