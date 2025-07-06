@@ -7,6 +7,8 @@ public class MenuController : MonoBehaviour
     public GameObject mainMenuUI;
     public GameObject pauseMenuUI;
     public GameObject helpMenuUI;
+    public GameObject winLevelUI;
+    public GameObject loseLevelUI;
     public GameObject gameHUD;
     public GameObject gameManager;
 
@@ -36,6 +38,8 @@ public class MenuController : MonoBehaviour
         mainMenuUI.SetActive(true);
         pauseMenuUI.SetActive(false);
         gameHUD.SetActive(false);
+        winLevelUI.SetActive(false);
+        loseLevelUI.SetActive(false);
         Time.timeScale = 0f;
         isPaused = false;
     }
@@ -51,8 +55,14 @@ public class MenuController : MonoBehaviour
         if (gameHUD != null)
             gameHUD.SetActive(true);
 
+        if (winLevelUI != null)
+            winLevelUI.SetActive(false);
+
         if (levelManager != null)
-            levelManager.LoadLevel(0); 
+            levelManager.LoadLevel(0);
+
+        if (levelManager != null)
+            loseLevelUI.SetActive(false);
 
         Time.timeScale = 1f;
         isPaused = false;
@@ -132,5 +142,29 @@ public class MenuController : MonoBehaviour
         Time.timeScale = 1f;
         gameManager.GetComponent<GameManager>().ResetGame();
         ShowMainMenu();
+    }
+
+    public void ShowLevelCompleteMessage()
+    {
+        if (winLevelUI != null)
+            winLevelUI.SetActive(true);
+    }
+
+    public void HideLevelCompleteMessage()
+    {
+        if (winLevelUI != null)
+            winLevelUI.SetActive(false);
+    }
+
+    public void ShowLoseLevelMessage()
+    {
+        if (loseLevelUI != null)
+            loseLevelUI.SetActive(true);
+    }
+
+    public void HideLoseLevelMessage()
+    {
+        if (loseLevelUI != null)
+            loseLevelUI.SetActive(false);
     }
 }

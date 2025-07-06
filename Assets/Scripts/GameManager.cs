@@ -10,6 +10,12 @@ public class GameManager : MonoBehaviour
     private GameObject gatosParentObject;
     private HashSet<GameObject> allCats = new HashSet<GameObject>();
     private Animator playerAnimator;
+    private MenuController menu;
+
+    void Start()
+    {
+        menu = FindFirstObjectByType<MenuController>();
+    }
 
     public void SetPlayerAnimator(Animator animator)
     {
@@ -25,8 +31,6 @@ public class GameManager : MonoBehaviour
         {
             allCats.Add(parent.GetChild(i).gameObject);
         }
-
-        Debug.Log($"🐱 {allCats.Count} gatos encontrados nesta fase.");
     }
 
     public void CheckVictory()
@@ -60,7 +64,15 @@ public class GameManager : MonoBehaviour
         if (playerAnimator != null)
             playerAnimator.SetTrigger("winLevel");
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(1f);
+
+        if (menu != null)
+            menu.ShowLevelCompleteMessage();
+
+        yield return new WaitForSeconds(1f);
+
+        if (menu != null)
+            menu.HideLevelCompleteMessage();
 
         LevelManager lm = FindFirstObjectByType<LevelManager>();
         if (lm != null)
@@ -73,19 +85,28 @@ public class GameManager : MonoBehaviour
             else
             {
                 Debug.Log("🎉 Jogo completo! Todas as fases vencidas!");
-                // Exibir tela final, créditos, voltar ao menu, etc.
             }
         }
     }
 
     public void GameOver()
     {
-        if (isGameOver) return;
+        StartCoroutine(WaitAndLoseLevel());
+    }
+
+    private IEnumerator WaitAndLoseLevel()
+    {
+        if (isGameOver) yield break;
 
         isGameOver = true;
 
         if (playerAnimator != null)
             playerAnimator.SetTrigger("loseLevel");
+
+        yield return new WaitForSeconds(1f);
+
+        if (menu != null)
+            menu.ShowLoseLevelMessage();
     }
 
     public void ResetGame()
@@ -98,6 +119,9 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = false;
         hud.ResetBoxCounter(allCats.Count);
+
+        if (menu != null)
+            menu.HideLoseLevelMessage();
     }
 
     public void UpdateCatBoxCounter()
