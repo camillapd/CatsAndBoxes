@@ -5,27 +5,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static bool isGameOver = false;
+    public HUDController hud;
 
     private GameObject gatosParentObject;
     private HashSet<GameObject> allCats = new HashSet<GameObject>();
     private Animator playerAnimator;
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            LevelManager lm = FindFirstObjectByType<LevelManager>();
-            if (lm != null)
-            {
-                Debug.Log("🔄 Reiniciando a fase atual...");
-                lm.LoadLevel(lm.CurrentLevelIndex);
-            }
-            else
-            {
-                Debug.LogError("❌ LevelManager não encontrado!");
-            }
-        }
-    }
 
     public void SetPlayerAnimator(Animator animator)
     {
@@ -49,12 +33,7 @@ public class GameManager : MonoBehaviour
     {
         if (AllCatsInBoxes())
         {
-            Debug.Log("🎉 Todos os gatos estão nas caixas! Vitória!");
             WinGame();
-        }
-        else
-        {
-            Debug.Log("😺 Ainda tem gato fora da caixa.");
         }
     }
 
@@ -73,7 +52,6 @@ public class GameManager : MonoBehaviour
 
     void WinGame()
     {
-        Debug.Log("🏁 Fase vencida!");
         StartCoroutine(WaitAndLoadNextLevel());
     }
 
@@ -90,7 +68,6 @@ public class GameManager : MonoBehaviour
             int next = lm.CurrentLevelIndex + 1;
             if (next < lm.TotalLevels)
             {
-                Debug.Log("➡️ Indo para a próxima fase...");
                 lm.NextLevel();
             }
             else
@@ -103,12 +80,9 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log("💥 Game Over! Um gato fugiu!");
-
         if (isGameOver) return;
 
         isGameOver = true;
-        Debug.Log("💀 Game Over");
 
         if (playerAnimator != null)
             playerAnimator.SetTrigger("loseLevel");
@@ -118,8 +92,30 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = false;
         allCats.Clear();
-        // Resetar outras variáveis de estado, se houver
     }
 
+    public void ResetLevel()
+    {
+        isGameOver = false;
+        hud.ResetBoxCounter(allCats.Count);
+    }
+
+    public void UpdateCatBoxCounter()
+    {
+        int placed = 0;
+        foreach (var cat in allCats)
+        {
+            CatState catState = cat.GetComponent<CatState>();
+            if (catState != null && catState.isInsideBox)
+            {
+                placed++;
+            }
+        }
+
+        if (hud != null)
+        {
+            hud.UpdateBoxCounter(placed, allCats.Count);
+        }
+    }
 
 }
