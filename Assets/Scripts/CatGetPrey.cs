@@ -31,6 +31,9 @@ public class CatGetPrey : MonoBehaviour
         {
             anim.SetBool("isRunning", true);
         }
+
+        CatSFX sfx = GetComponent<CatSFX>();
+        sfx.PlaySeeMouseSound();
     }
 
     IEnumerator RunAfterPrey()

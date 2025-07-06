@@ -9,7 +9,7 @@ public class HoldCats : MonoBehaviour
     public LayerMask boxLayer;
     public GameObject preyObject;
     public Transform visual;
-
+    
     private GameObject heldCat;
     private PreyLoop loopScript;
     private PreyRun preyScript;
@@ -148,6 +148,12 @@ public class HoldCats : MonoBehaviour
                     heldCat.GetComponent<SpriteRenderer>().enabled = false;
                     heldCat.GetComponent<Collider2D>().enabled = false;
                     isHoldingCat = true;
+                    CatSFX sfx = heldCat.GetComponent<CatSFX>();
+                    if (sfx != null)
+                    {
+                        sfx.PlayPickSound();
+                    }
+
                     hud.SetHoldingCat(isHoldingCat);
                     return;
                 }

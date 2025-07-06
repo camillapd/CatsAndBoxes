@@ -33,6 +33,8 @@ public class CatRun : MonoBehaviour
             anim.SetInteger("direction", DirectionToInt(runDirection));
         }
 
+        CatSFX sfx = GetComponent<CatSFX>();
+        sfx.PlayScaredSound();
         StartCoroutine(Run());
     }
 
