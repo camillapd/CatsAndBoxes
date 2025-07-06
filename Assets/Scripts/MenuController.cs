@@ -6,14 +6,17 @@ public class MenuController : MonoBehaviour
 {
     public GameObject mainMenuUI;
     public GameObject pauseMenuUI;
+    public GameObject helpMenuUI;
     public GameObject gameHUD;
     public GameObject gameManager;
 
     private LevelManager levelManager;
     private bool isPaused = false;
+    private bool openedHelpFromPause = false;
 
     void Start()
     {
+        levelManager = gameManager.GetComponent<LevelManager>();
         ShowMainMenu();
     }
 
@@ -23,7 +26,7 @@ public class MenuController : MonoBehaviour
         {
             if (isPaused)
                 ResumeGame();
-            else if (!isPaused) // && gameHUD.activeSelf
+            else if (!isPaused && gameHUD.activeSelf)
                 PauseGame();
         }
     }
@@ -32,7 +35,7 @@ public class MenuController : MonoBehaviour
     {
         mainMenuUI.SetActive(true);
         pauseMenuUI.SetActive(false);
-        // gameHUD.SetActive(false);
+        gameHUD.SetActive(false);
         Time.timeScale = 0f;
         isPaused = false;
     }
@@ -45,20 +48,26 @@ public class MenuController : MonoBehaviour
         if (pauseMenuUI != null)
             pauseMenuUI.SetActive(false);
 
-        // if (gameHUD != null)
-        //     gameHUD.SetActive(true);
+        if (gameHUD != null)
+            gameHUD.SetActive(true);
 
         if (levelManager != null)
-            levelManager.LoadLevel(0); // inicia primeira fase
+            levelManager.LoadLevel(0); 
 
         Time.timeScale = 1f;
         isPaused = false;
+
+        if (helpMenuUI != null && levelManager.CurrentLevelIndex == 0)
+        {
+            helpMenuUI.SetActive(true);
+            openedHelpFromPause = false;
+        }
     }
 
     public void PauseGame()
     {
         pauseMenuUI.SetActive(true);
-        // gameHUD.SetActive(false);
+        gameHUD.SetActive(false);
         Time.timeScale = 0f;
         isPaused = true;
     }
@@ -66,9 +75,39 @@ public class MenuController : MonoBehaviour
     public void ResumeGame()
     {
         pauseMenuUI.SetActive(false);
-        // gameHUD.SetActive(true);
+        gameHUD.SetActive(true);
         Time.timeScale = 1f;
         isPaused = false;
+    }
+
+    public void CloseHelper()
+    {
+        helpMenuUI.SetActive(false);
+
+        if (openedHelpFromPause)
+        {
+            pauseMenuUI.SetActive(true);
+        }
+        else
+        {
+            Time.timeScale = 1f;
+            isPaused = false;
+        }
+    }
+
+    public void ShowHelp()
+    {
+        if (helpMenuUI != null)
+            helpMenuUI.SetActive(true);
+    }
+
+    public void ShowHelpFromPause()
+    {
+        if (helpMenuUI != null)
+            helpMenuUI.SetActive(true);
+
+        openedHelpFromPause = true;
+        pauseMenuUI.SetActive(false);
     }
 
     public void QuitGame()
@@ -81,7 +120,6 @@ public class MenuController : MonoBehaviour
     {
         Time.timeScale = 1f;
         gameManager.GetComponent<GameManager>().ResetGame();
-        levelManager = gameManager.GetComponent<LevelManager>();
 
         int currentLevel = levelManager.CurrentLevelIndex;
         levelManager.LoadLevel(currentLevel);
