@@ -42,7 +42,6 @@ public class CatRun : MonoBehaviour
 
         while (runningAway)
         {
-            // 👉 Recalcula a cada frame, a partir da posição atual
             Vector2 nextPos = (Vector2)transform.position + runDirection;
             Collider2D walls = Physics2D.OverlapBox(nextPos, boxSize, 0f, wallsLayer);
 
@@ -52,7 +51,6 @@ public class CatRun : MonoBehaviour
                 Collider2D outside = Physics2D.OverlapBox(nextPos, boxSize, 0f, outsideLayer);
                 if (outside != null)
                 {
-                    Debug.Log("💨 O gato fugiu pela " + outside.name + "!");
                     if (anim != null) anim.SetBool("isRunning", false);
                     Destroy(gameObject);
                     GM.GameOver();
@@ -61,7 +59,6 @@ public class CatRun : MonoBehaviour
 
                 runningAway = false;
                 gameObject.layer = LayerMask.NameToLayer("Gatos");
-                Debug.Log("🐾 Gato parou ao bater na parede e pode ser pego de novo!");
                 if (anim != null) anim.SetBool("isRunning", false);
                 yield break;
             }
@@ -72,7 +69,6 @@ public class CatRun : MonoBehaviour
             {
                 runningAway = false;
                 gameObject.layer = LayerMask.NameToLayer("Gatos");
-                Debug.Log("🐾 Gato encontrou caixa já ocupada e parou antes.");
                 if (anim != null) anim.SetBool("isRunning", false);
                 yield break;
             }
@@ -100,18 +96,18 @@ public class CatRun : MonoBehaviour
                 if (catState != null)
                 {
                     catState.isInsideBox = true;
-                    Debug.Log($"🐾 Gato entrou na caixa! isInsideBox = {catState.isInsideBox}");
                 }
                 if (anim != null)
                 {
                     anim.SetBool("isRunning", false);
                     anim.SetBool("isOnBox", true);
                 }
+                GM.UpdateCatBoxCounter();
                 GM.CheckVictory();
                 yield break;
             }
 
-            // Continua fugindo até encontrar parede ou caixa
+
         }
     }
     private int DirectionToInt(Vector2 dir)
