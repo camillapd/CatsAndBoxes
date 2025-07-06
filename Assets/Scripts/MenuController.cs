@@ -11,6 +11,7 @@ public class MenuController : MonoBehaviour
     public GameObject loseLevelUI;
     public GameObject gameHUD;
     public GameObject gameManager;
+    public MusicManager musicManager;
 
     private LevelManager levelManager;
     private bool isPaused = false;
@@ -42,6 +43,7 @@ public class MenuController : MonoBehaviour
         loseLevelUI.SetActive(false);
         Time.timeScale = 0f;
         isPaused = false;
+        musicManager.PlayMenuMusic();
     }
 
     public void StartGame()
@@ -66,6 +68,7 @@ public class MenuController : MonoBehaviour
 
         Time.timeScale = 1f;
         isPaused = false;
+        musicManager.PlayGameMusic();
 
         if (helpMenuUI != null && levelManager.CurrentLevelIndex == 0)
         {
