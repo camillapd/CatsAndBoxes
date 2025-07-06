@@ -8,7 +8,6 @@ public class HoldCats : MonoBehaviour
     public LayerMask catRunLayer;
     public LayerMask boxLayer;
     public GameObject preyObject;
-
     public Transform visual;
 
     private GameObject heldCat;
@@ -18,8 +17,8 @@ public class HoldCats : MonoBehaviour
     private Vector2 lastDirection = Vector2.down;
     private GameManager GM;
     private Animator animator;
-
     private GameObject preyLoopObject;
+    private HUDController hud;
 
     void Start()
     {
@@ -34,6 +33,15 @@ public class HoldCats : MonoBehaviour
 
         if (visual != null)
             animator = visual.GetComponent<Animator>();
+    }
+
+    void Awake()
+    {
+        hud = FindObjectOfType<HUDController>();
+        if (hud == null)
+        {
+            Debug.LogError("HUDController não encontrado na cena!");
+        }
     }
 
     void CheckIfPlayerOnPreyPath()
@@ -64,7 +72,6 @@ public class HoldCats : MonoBehaviour
 
             Vector2 catStartPos = playerPos + dirPlayerToPrey;
 
-
             heldCat.transform.position = new Vector3(catStartPos.x, catStartPos.y, -0.1f);
             heldCat.SetActive(true);
             heldCat.GetComponent<SpriteRenderer>().enabled = true;
@@ -79,6 +86,7 @@ public class HoldCats : MonoBehaviour
             preyScript.InitRun(fleeDir);
             heldCat = null;
             isHoldingCat = false;
+            hud.SetHoldingCat(isHoldingCat);
         }
     }
 
@@ -114,6 +122,7 @@ public class HoldCats : MonoBehaviour
 
             heldCat = null;
             isHoldingCat = false;
+            hud.SetHoldingCat(isHoldingCat);
         }
     }
 
@@ -139,6 +148,7 @@ public class HoldCats : MonoBehaviour
                     heldCat.GetComponent<SpriteRenderer>().enabled = false;
                     heldCat.GetComponent<Collider2D>().enabled = false;
                     isHoldingCat = true;
+                    hud.SetHoldingCat(isHoldingCat);
                     return;
                 }
             }
@@ -193,6 +203,7 @@ public class HoldCats : MonoBehaviour
 
                 heldCat.GetComponent<CatState>().isInsideBox = true;
                 SetIsOnBox();
+                GM.UpdateCatBoxCounter();
                 GM.CheckVictory();
             }
             else
@@ -204,6 +215,7 @@ public class HoldCats : MonoBehaviour
 
             heldCat = null;
             isHoldingCat = false;
+            hud.SetHoldingCat(isHoldingCat);
         }
     }
 
