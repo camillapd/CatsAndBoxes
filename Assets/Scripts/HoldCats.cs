@@ -9,7 +9,7 @@ public class HoldCats : MonoBehaviour
     public LayerMask boxLayer;
     public GameObject preyObject;
     public Transform visual;
-    
+
     private GameObject heldCat;
     private PreyLoop loopScript;
     private PreyRun preyScript;
@@ -209,6 +209,7 @@ public class HoldCats : MonoBehaviour
 
                 heldCat.GetComponent<CatState>().isInsideBox = true;
                 SetIsOnBox();
+                SFXManager.Instance.PlaySound(SFXManager.Instance.catOnBox);
                 GM.UpdateCatBoxCounter();
                 GM.CheckVictory();
             }
