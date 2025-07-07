@@ -6,6 +6,11 @@ public class SFXManager : MonoBehaviour
     public AudioSource audioSource;
 
     public AudioClip waterSplash;
+    public AudioClip footsteps;
+    public AudioClip catOnBox;
+    public AudioClip buttonClick;
+    public AudioClip winLevel;
+    public AudioClip loseLevel;
 
     void Awake()
     {
@@ -23,5 +28,10 @@ public class SFXManager : MonoBehaviour
     {
         if (clip != null)
             audioSource.PlayOneShot(clip);
+    }
+
+    public void PlayButtonClick()
+    {
+        PlaySound(buttonClick);
     }
 }
