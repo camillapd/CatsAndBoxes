@@ -9,6 +9,7 @@ public class MenuController : MonoBehaviour
     public GameObject helpMenuUI;
     public GameObject winLevelUI;
     public GameObject loseLevelUI;
+    public GameObject endingScreen;
     public GameObject gameHUD;
     public GameObject gameManager;
     public MusicManager musicManager;
@@ -125,7 +126,6 @@ public class MenuController : MonoBehaviour
 
     public void QuitGame()
     {
-        Debug.Log("Saindo do jogo...");
         Application.Quit();
     }
 
@@ -169,5 +169,12 @@ public class MenuController : MonoBehaviour
     {
         if (loseLevelUI != null)
             loseLevelUI.SetActive(false);
+    }
+
+    public void showEndingMessage()
+    {
+        gameHUD.SetActive(false);
+        endingScreen.SetActive(true);
+        musicManager.PlayMenuMusic();
     }
 }
