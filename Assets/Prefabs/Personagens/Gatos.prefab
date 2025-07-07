@@ -266,6 +266,7 @@ MonoBehaviour:
   outsideLayer:
     serializedVersion: 2
     m_Bits: 1024
+  waterTilemap: {fileID: 0}
 --- !u!114 &8275852343790007208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -389,8 +390,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 752747812573834504}
   onPickSound: {fileID: 8300000, guid: be3dabe763de58a43ab27ad8fb5545cd, type: 3}
-  onScaredSound: {fileID: 8300000, guid: 6638d09616673c1409e2af3d2bff11eb, type: 3}
-  onSeeMouseSound: {fileID: 8300000, guid: 194043b7ebe95804d930cba2a9ccc64c, type: 3}
+  onScaredSound: {fileID: 8300000, guid: 34f843917bbec954a826a1335f85a8ff, type: 3}
+  onSeeMouseSound: {fileID: 8300000, guid: 34f843917bbec954a826a1335f85a8ff, type: 3}
 --- !u!1 &4466685766219471900
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,6 +624,7 @@ MonoBehaviour:
   outsideLayer:
     serializedVersion: 2
     m_Bits: 1024
+  waterTilemap: {fileID: 0}
 --- !u!114 &5221117442009355263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -745,9 +747,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 5003530613489981147}
-  onPickSound: {fileID: 8300000, guid: caf1f3efd8ad3b642b24b33542528b90, type: 3}
-  onScaredSound: {fileID: 8300000, guid: f8b1c93b2bdd81743ba48307d070f5c6, type: 3}
-  onSeeMouseSound: {fileID: 8300000, guid: 34f843917bbec954a826a1335f85a8ff, type: 3}
+  onPickSound: {fileID: 8300000, guid: e841ca37644e1a64c86f1c2177d3ee69, type: 3}
+  onScaredSound: {fileID: 8300000, guid: caf1f3efd8ad3b642b24b33542528b90, type: 3}
+  onSeeMouseSound: {fileID: 8300000, guid: caf1f3efd8ad3b642b24b33542528b90, type: 3}
 --- !u!1 &7083700079282219930
 GameObject:
   m_ObjectHideFlags: 0
@@ -980,6 +982,7 @@ MonoBehaviour:
   outsideLayer:
     serializedVersion: 2
     m_Bits: 1024
+  waterTilemap: {fileID: 0}
 --- !u!114 &7029578191522468839
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1103,5 +1106,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioSource: {fileID: 9176038305621642954}
   onPickSound: {fileID: 8300000, guid: c7bfb6caa17819c4a9716325ca81aac4, type: 3}
-  onScaredSound: {fileID: 8300000, guid: e841ca37644e1a64c86f1c2177d3ee69, type: 3}
+  onScaredSound: {fileID: 8300000, guid: 7ce36acb59804fc40b0bf478b47b3e6a, type: 3}
   onSeeMouseSound: {fileID: 8300000, guid: 7ce36acb59804fc40b0bf478b47b3e6a, type: 3}
