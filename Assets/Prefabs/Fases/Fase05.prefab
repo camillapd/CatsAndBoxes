@@ -4119,6 +4119,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 866468678636192555}
     m_Modifications:
+    - target: {fileID: 350661683199795279, guid: ded6b2f15a08c1547a858de58ce75799, type: 3}
+      propertyPath: waterTilemap
+      value: 
+      objectReference: {fileID: 8833099912686980829}
     - target: {fileID: 856658036885792990, guid: ded6b2f15a08c1547a858de58ce75799, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2
@@ -4139,6 +4143,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gatos
       objectReference: {fileID: 0}
+    - target: {fileID: 3564047267234352395, guid: ded6b2f15a08c1547a858de58ce75799, type: 3}
+      propertyPath: waterTilemap
+      value: 
+      objectReference: {fileID: 8833099912686980829}
     - target: {fileID: 4877191597964748223, guid: ded6b2f15a08c1547a858de58ce75799, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3
@@ -4147,6 +4155,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7520701835839743792, guid: ded6b2f15a08c1547a858de58ce75799, type: 3}
+      propertyPath: waterTilemap
+      value: 
+      objectReference: {fileID: 8833099912686980829}
     - target: {fileID: 8477741149849684166, guid: ded6b2f15a08c1547a858de58ce75799, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.5
@@ -4205,6 +4217,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 866468678636192555}
     m_Modifications:
+    - target: {fileID: 4546285021457784772, guid: f41b67e0d12c58147b754012aad1dc45, type: 3}
+      propertyPath: waterTilemap
+      value: 
+      objectReference: {fileID: 8833099912686980829}
     - target: {fileID: 6688815704470435732, guid: f41b67e0d12c58147b754012aad1dc45, type: 3}
       propertyPath: m_Name
       value: Jogador

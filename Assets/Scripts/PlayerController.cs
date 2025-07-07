@@ -1,23 +1,26 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Tilemaps;
 
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public LayerMask collisionLayer;
     public Transform visual;
+    public Tilemap waterTilemap;
 
     private bool isMoving = false;
     private Vector2 input;
     private Vector2 lastDirection = Vector2.down;
     private Vector3 targetPos;
-
     private PullBoxes pullBoxes;
     private HoldCats holdCats;
     private Animator animator;
+    private Vector3Int lastWaterTilePos;
 
     void Start()
     {
+        lastWaterTilePos = new Vector3Int(int.MinValue, int.MinValue, 0);
         pullBoxes = GetComponent<PullBoxes>();
         holdCats = GetComponent<HoldCats>();
 
@@ -48,7 +51,6 @@ public class PlayerController : MonoBehaviour
         if (input != Vector2.zero)
             lastDirection = input.normalized;
 
-        // Interações
         if (Input.GetKeyDown(KeyCode.X))
         {
             if (!pullBoxes.IsPulling)
@@ -91,9 +93,6 @@ public class PlayerController : MonoBehaviour
                 Vector3 preyNextPos = preyPos + (Vector3)preyLoop.chosenDir;
 
                 blockedByPrey = IsCrossingMovement(currentPos, newTargetPos, preyPos, preyNextPos);
-
-                if (blockedByPrey)
-                    Debug.Log($"Movimento bloqueado: Jogador {currentPos}→{newTargetPos}, Rato {preyPos}→{preyNextPos}");
             }
         }
 
@@ -109,10 +108,13 @@ public class PlayerController : MonoBehaviour
             bool isBlocked = Physics2D.OverlapBox(gridCenter, boxSize, 0f, collisionLayer);
 
             if (!isBlocked && !blockedByPrey)
+            {
                 StartCoroutine(MoveTo(newTargetPos));
+                CheckIfOnWater();
+            }
+
         }
 
-        // Atualiza animação e visual
         if (animator != null)
             animator.SetBool("isMoving", input != Vector2.zero);
 
@@ -161,7 +163,6 @@ public class PlayerController : MonoBehaviour
     {
         if (!IsTileFree(destination))
         {
-            Debug.Log("Movimento bloqueado! Tile ocupado por rato.");
             yield break;
         }
 
@@ -179,8 +180,6 @@ public class PlayerController : MonoBehaviour
         if (holdCats != null)
             holdCats.NotifyArrived();
     }
-
-    float RoundToGrid(float value) => Mathf.Floor(value) + 0.5f;
 
     void UpdateVisualDirection(Vector2 dir)
     {
@@ -210,4 +209,24 @@ public class PlayerController : MonoBehaviour
         Collider2D hit = Physics2D.OverlapCircle(pos, checkRadius, preyLayer);
         return hit == null;
     }
+
+    void CheckIfOnWater()
+    {
+        if (waterTilemap == null) return;
+
+        Vector3Int currentPos = waterTilemap.WorldToCell(transform.position);
+
+        if (currentPos != lastWaterTilePos)
+        {
+            lastWaterTilePos = currentPos;
+
+            if (waterTilemap.GetTile(currentPos) != null)
+            {
+                SFXManager.Instance.PlaySound(SFXManager.Instance.waterSplash);
+            }
+        }
+    }
+
+    float RoundToGrid(float value) => Mathf.Floor(value) + 0.5f;
+
 }

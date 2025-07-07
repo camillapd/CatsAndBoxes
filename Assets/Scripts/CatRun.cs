@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Tilemaps;
 
 public class CatRun : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class CatRun : MonoBehaviour
     public LayerMask wallsLayer;
     public LayerMask boxLayer;
     public LayerMask outsideLayer;
+    public Tilemap waterTilemap;
 
     private Vector2 runDirection;
     private bool runningAway = false;
@@ -40,14 +42,14 @@ public class CatRun : MonoBehaviour
 
     IEnumerator Run()
     {
-        Vector2 boxSize = new Vector2(0.8f, 0.8f); // ou 1f
+        Vector2 boxSize = new Vector2(0.8f, 0.8f); 
 
         while (runningAway)
         {
             Vector2 nextPos = (Vector2)transform.position + runDirection;
             Collider2D walls = Physics2D.OverlapBox(nextPos, boxSize, 0f, wallsLayer);
 
-            // Se bateu numa parede ou saiu da arena
+            // Se bateu numa parede ou saiu
             if (walls != null)
             {
                 Collider2D outside = Physics2D.OverlapBox(nextPos, boxSize, 0f, outsideLayer);
@@ -86,6 +88,16 @@ public class CatRun : MonoBehaviour
             }
             transform.position = nextPos;
 
+            // 🎵 Check se o gato pisou na água
+            if (waterTilemap != null)
+            {
+                Vector3Int tilePos = waterTilemap.WorldToCell(transform.position);
+                if (waterTilemap.GetTile(tilePos) != null)
+                {
+                    SFXManager.Instance.PlaySound(SFXManager.Instance.waterSplash);
+                }
+            }
+
             // Se entrou numa caixa livre, marca vitória
             if (boxCol != null)
             {
@@ -112,6 +124,7 @@ public class CatRun : MonoBehaviour
 
         }
     }
+
     private int DirectionToInt(Vector2 dir)
     {
         if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
