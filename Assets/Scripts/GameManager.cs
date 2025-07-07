@@ -85,7 +85,8 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("🎉 Jogo completo! Todas as fases vencidas!");
+                if (menu != null)
+                    menu.ShowEndingMessage();
             }
         }
     }
