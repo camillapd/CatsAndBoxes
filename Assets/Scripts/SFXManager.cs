@@ -34,4 +34,14 @@ public class SFXManager : MonoBehaviour
     {
         PlaySound(buttonClick);
     }
+
+    public void PlayWinLevel()
+    {
+        PlaySound(winLevel);
+    }
+
+    public void PlayLoseLevel()
+    {
+        PlaySound(loseLevel);
+    }
 }

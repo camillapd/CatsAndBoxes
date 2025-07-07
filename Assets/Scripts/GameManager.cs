@@ -56,7 +56,6 @@ public class GameManager : MonoBehaviour
 
     void WinGame()
     {
-        SFXManager.Instance.PlaySound(SFXManager.Instance.winLevel);
         StartCoroutine(WaitAndLoadNextLevel());
     }
 
@@ -65,10 +64,12 @@ public class GameManager : MonoBehaviour
         if (playerAnimator != null)
             playerAnimator.SetTrigger("winLevel");
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
 
         if (menu != null)
             menu.ShowLevelCompleteMessage();
+
+        SFXManager.Instance.PlayWinLevel();
 
         yield return new WaitForSeconds(1f);
 
@@ -93,7 +94,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        SFXManager.Instance.PlaySound(SFXManager.Instance.loseLevel);
+        SFXManager.Instance.PlayLoseLevel();
         StartCoroutine(WaitAndLoseLevel());
     }
 
