@@ -28,7 +28,6 @@ public class PullBoxes : MonoBehaviour
     {
         if (holdCats != null && holdCats.IsHoldingCat())
         {
-            Debug.Log("❌ Não é possível puxar caixa carregando um gato.");
             return;
         }
 
@@ -47,25 +46,20 @@ public class PullBoxes : MonoBehaviour
                 if (boxState != null && boxState.hasCatInside)
                 {
                     animator.SetTrigger("tryPullBlocked");
-                    Debug.Log("❌ Essa caixa está ocupada por um gato. Não pode puxar.");
                     return;
                 }
 
-                // Se já está puxando uma caixa diferente, solta a atual antes
                 if (isPulling && pulledBox != null && pulledBox != boxCol.transform)
                 {
-                    ReleaseBox();  // método que você já tem para soltar a caixa
+                    ReleaseBox(); 
                 }
 
-                // Puxa a nova caixa
                 pulledBox = boxCol.transform;
                 isPulling = true;
                 animator.SetBool("isPullingIdle", true);
-                Debug.Log("Caixa agarrada!");
                 return;
             }
         }
-        Debug.Log("Nenhuma caixa próxima para puxar.");
     }
 
     public void ReleaseBox()
@@ -73,7 +67,6 @@ public class PullBoxes : MonoBehaviour
         isPulling = false;
         pulledBox = null;
         animator.SetBool("isPullingIdle", false);
-        Debug.Log("Caixa solta.");
     }
 
     public void HandleBoxMovement(Vector2 input, MonoBehaviour caller)
@@ -129,10 +122,7 @@ public class PullBoxes : MonoBehaviour
     IEnumerator MoveWithBox(Vector3 playerDest, Vector3 boxDest)
     {
         isMoving = true;
-
-        // 1) Animação de "puxando em movimento"
         animator.SetBool("isPullingBox", true);
-        // garante que a idle está desligada durante o movimento
         animator.SetBool("isPullingIdle", false);
 
         Vector3 startPlayerPos = transform.position;
@@ -147,15 +137,12 @@ public class PullBoxes : MonoBehaviour
             yield return null;
         }
 
-        // 2) Snap para o centro do tile
         transform.position = RoundToGridVector3(playerDest);
         pulledBox.position = RoundToGridVector3(boxDest);
 
         isMoving = false;
         GetComponent<PlayerController>()?.CheckIfOnWater();
 
-        // 3) Desliga a animação de movimento e
-        //    liga de novo a idle se ainda estiver puxando
         animator.SetBool("isPullingBox", false);
         animator.SetBool("isPullingIdle", isPulling);
     }

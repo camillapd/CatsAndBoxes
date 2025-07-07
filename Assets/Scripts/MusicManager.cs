@@ -3,7 +3,6 @@ using UnityEngine;
 public class MusicManager : MonoBehaviour
 {
     public static MusicManager Instance;
-
     public AudioSource audioSource;
     public AudioClip menuMusic;
     public AudioClip gameMusic;
@@ -12,7 +11,7 @@ public class MusicManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject); // evita duplicatas
+            Destroy(gameObject);
             return;
         }
 

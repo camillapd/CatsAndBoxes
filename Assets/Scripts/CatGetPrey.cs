@@ -11,7 +11,7 @@ public class CatGetPrey : MonoBehaviour
     private bool chasingPrey;
     private GameManager GM;
     private Animator anim;
-    private Vector2 runDirection; // direção atual do movimento
+    private Vector2 runDirection;
     private SpriteRenderer spriteRenderer;
 
     public void InitChase(Transform prey)
@@ -141,6 +141,6 @@ public class CatGetPrey : MonoBehaviour
         if (Mathf.Abs(dir.x) >= Mathf.Abs(dir.y))
             return dir.x > 0 ? 3 : 2; // direita : esquerda
         else
-            return dir.y > 0 ? 0 : 1; // cima : baixo (se precisar manter)
+            return dir.y > 0 ? 0 : 1; // cima : baixo
     }
 }

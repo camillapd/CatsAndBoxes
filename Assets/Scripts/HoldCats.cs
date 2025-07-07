@@ -38,10 +38,6 @@ public class HoldCats : MonoBehaviour
     void Awake()
     {
         hud = FindObjectOfType<HUDController>();
-        if (hud == null)
-        {
-            Debug.LogError("HUDController não encontrado na cena!");
-        }
     }
 
     void CheckIfPlayerOnPreyPath()
@@ -173,7 +169,7 @@ public class HoldCats : MonoBehaviour
         Vector2 dropDir = lastDirection;
         if (dropDir == Vector2.zero) dropDir = Vector2.down;
 
-        Vector2 boxSize = new Vector2(0.8f, 0.8f); // ou 1.0f se quiser o tile todo
+        Vector2 boxSize = new Vector2(0.8f, 0.8f);
 
         Vector2 dropPos = (Vector2)transform.position + dropDir;
         bool isBlocked = Physics2D.OverlapBox(dropPos, boxSize, 0f, collisionLayer);

@@ -1,5 +1,4 @@
 using UnityEngine;
-
 [RequireComponent(typeof(Camera))]
 public class FixedCamera : MonoBehaviour
 {
@@ -12,7 +11,6 @@ public class FixedCamera : MonoBehaviour
     {
         cam = GetComponent<Camera>();
         cam.orthographic = true;
-        // orthographicSize é metade da altura em unidades (1 tile = 1 unidade)
         cam.orthographicSize = tilesVertical / 2f;
     }
 

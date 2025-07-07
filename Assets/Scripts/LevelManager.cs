@@ -27,11 +27,7 @@ public class LevelManager : MonoBehaviour
         {
             gameManager.ResetGame();
         }
-        else
-        {
-            Debug.LogError("GameManager não está atribuído no LevelManager!");
-        }
-
+        
         if (index >= 0 && index < levels.Length)
         {
             currentLevel = Instantiate(levels[index]);
@@ -45,22 +41,14 @@ public class LevelManager : MonoBehaviour
             {
                 gameManager.SetGatosParent(CurrentLevelInfo.gatosParent);
             }
-            else
-            {
-                Debug.LogWarning("LevelInfo não encontrado no prefab " + currentLevel.name);
-            }
 
             if (hudController != null)
             {
                 hudController.SetLevelNumber(levelIndex);
 
             }
-            
+
             gameManager.UpdateCatBoxCounter();
-        }
-        else
-        {
-            Debug.Log("🎉 Fim das fases!");
         }
     }
 
