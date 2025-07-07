@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
             if (!isBlocked && !blockedByPrey)
             {
                 StartCoroutine(MoveTo(newTargetPos));
-                CheckIfOnWater();
+
             }
 
         }
@@ -166,6 +166,11 @@ public class PlayerController : MonoBehaviour
             yield break;
         }
 
+        if (Vector3.Distance(transform.position, destination) < 0.01f)
+        {
+            yield break;
+        }
+
         isMoving = true;
 
         while (Vector3.Distance(transform.position, destination) > 0.01f)
@@ -176,6 +181,8 @@ public class PlayerController : MonoBehaviour
 
         transform.position = destination;
         isMoving = false;
+
+        CheckIfOnWater();
 
         if (holdCats != null)
             holdCats.NotifyArrived();
@@ -212,7 +219,11 @@ public class PlayerController : MonoBehaviour
 
     void CheckIfOnWater()
     {
-        if (waterTilemap == null) return;
+        if (waterTilemap == null)
+        {
+            SFXManager.Instance.PlaySound(SFXManager.Instance.footsteps);
+            return;
+        }
 
         Vector3Int currentPos = waterTilemap.WorldToCell(transform.position);
 
@@ -223,6 +234,10 @@ public class PlayerController : MonoBehaviour
             if (waterTilemap.GetTile(currentPos) != null)
             {
                 SFXManager.Instance.PlaySound(SFXManager.Instance.waterSplash);
+            }
+            else
+            {
+                SFXManager.Instance.PlaySound(SFXManager.Instance.footsteps);
             }
         }
     }
