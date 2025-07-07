@@ -143,7 +143,7 @@ public class PullBoxes : MonoBehaviour
         {
             t += Time.deltaTime * moveSpeed;
             transform.position = Vector3.Lerp(startPlayerPos, playerDest, t);
-            pulledBox.position = Vector3.Lerp(startBoxPos, boxDest, t);
+            pulledBox.position = Vector3.Lerp(startBoxPos, boxDest, t);  
             yield return null;
         }
 
@@ -152,6 +152,7 @@ public class PullBoxes : MonoBehaviour
         pulledBox.position = RoundToGridVector3(boxDest);
 
         isMoving = false;
+        GetComponent<PlayerController>()?.CheckIfOnWater();
 
         // 3) Desliga a animação de movimento e
         //    liga de novo a idle se ainda estiver puxando

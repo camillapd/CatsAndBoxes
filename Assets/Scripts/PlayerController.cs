@@ -217,30 +217,26 @@ public class PlayerController : MonoBehaviour
         return hit == null;
     }
 
-    void CheckIfOnWater()
+    public void CheckIfOnWater()
     {
-        if (waterTilemap == null)
-        {
-            SFXManager.Instance.PlaySound(SFXManager.Instance.footsteps);
-            return;
-        }
-
-        Vector3Int currentPos = waterTilemap.WorldToCell(transform.position);
-
-        if (currentPos != lastWaterTilePos)
-        {
-            lastWaterTilePos = currentPos;
-
-            if (waterTilemap.GetTile(currentPos) != null)
-            {
-                SFXManager.Instance.PlaySound(SFXManager.Instance.waterSplash);
-            }
-            else
-            {
-                SFXManager.Instance.PlaySound(SFXManager.Instance.footsteps);
-            }
-        }
+    if (waterTilemap == null)
+    {
+        SFXManager.Instance.PlaySound(SFXManager.Instance.footsteps);
+        return;
     }
+
+    Vector3Int currentPos = waterTilemap.WorldToCell(transform.position);
+    if (currentPos != lastWaterTilePos)
+    {
+        lastWaterTilePos = currentPos;
+
+        if (waterTilemap.GetTile(currentPos) != null)
+            SFXManager.Instance.PlaySound(SFXManager.Instance.waterSplash);
+        else
+            SFXManager.Instance.PlaySound(SFXManager.Instance.footsteps);
+    }
+}
+
 
     float RoundToGrid(float value) => Mathf.Floor(value) + 0.5f;
 
