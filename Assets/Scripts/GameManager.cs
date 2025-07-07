@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
 
     void WinGame()
     {
+        SFXManager.Instance.PlaySound(SFXManager.Instance.winLevel);
         StartCoroutine(WaitAndLoadNextLevel());
     }
 
@@ -91,6 +92,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        SFXManager.Instance.PlaySound(SFXManager.Instance.loseLevel);
         StartCoroutine(WaitAndLoseLevel());
     }
 
