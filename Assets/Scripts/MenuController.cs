@@ -9,6 +9,7 @@ public class MenuController : MonoBehaviour
     public GameObject helpMenuUI;
     public GameObject winLevelUI;
     public GameObject loseLevelUI;
+    public GameObject optionsUI;
     public GameObject endingScreen;
     public GameObject gameHUD;
     public GameObject gameManager;
@@ -42,6 +43,7 @@ public class MenuController : MonoBehaviour
         gameHUD.SetActive(false);
         winLevelUI.SetActive(false);
         loseLevelUI.SetActive(false);
+        optionsUI.SetActive(false);
         Time.timeScale = 0f;
         isPaused = false;
         musicManager.PlayMenuMusic();
@@ -171,10 +173,20 @@ public class MenuController : MonoBehaviour
             loseLevelUI.SetActive(false);
     }
 
-    public void showEndingMessage()
+    public void ShowEndingMessage()
     {
         gameHUD.SetActive(false);
         endingScreen.SetActive(true);
         musicManager.PlayMenuMusic();
+    }
+
+    public void OpenOptionsMenu()
+    {
+        optionsUI.SetActive(true);
+    }
+
+    public void CloseOptionsMenu()
+    {
+        optionsUI.SetActive(false);
     }
 }
